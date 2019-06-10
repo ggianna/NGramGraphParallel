@@ -1,7 +1,7 @@
 SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
-OBJECTS				= $(SOURCES_FOLDER)/test.o $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o
+OBJECTS				= $(SOURCES_FOLDER)/test.o $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o
 OUT					= test
 CC					= g++
 FLAGS				= -c -std=c++11 -Wall -I$(HEADERS_FOLDER) 
@@ -28,6 +28,9 @@ $(SOURCES_FOLDER)/StringPayload.o: $(SOURCES_FOLDER)/StringPayload.cpp $(HEADERS
 
 $(SOURCES_FOLDER)/StringSplitter.o: $(SOURCES_FOLDER)/StringSplitter.cpp $(HEADERS_FOLDER)/StringSplitter.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/StringSplitter.cpp -o $@
+
+$(SOURCES_FOLDER)/ProximityApproach.o: $(SOURCES_FOLDER)/ProximityApproach.cpp $(HEADERS_FOLDER)/ProximityApproach.hpp
+	$(CC) $(FLAGS) $(SOURCES_FOLDER)/ProximityApproach.cpp -o $@
 
 clean:
 	rm -f $(OBJECTS) $(OUT)

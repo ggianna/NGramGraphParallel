@@ -25,8 +25,11 @@
 
 // defines
 #define NGRAMSIZE_DEFAULT_VALUE 3
-#define CORRELATIONWINDOW_DEFAULT_VALUE 3
+#define CORRELATIONWINDOW_DEFAULT_VALUE 4
 
+
+// forward declaration
+class ProximityApproach; //We need forward declaration, because NGramGraph and ProximityApproach refer to each other.
 
 
 /**
@@ -38,6 +41,13 @@
 class NGramGraph : public ProximityGraph<std::string, std::string>
 {
     public:
+        /**
+         * \var CorrelationWindow The maximum distance of terms to be considered as correlated. Default is 4.
+         *
+         */
+	unsigned int CorrelationWindow;
+
+
         /** Default constructor.
          * CorrelationWindow is set to CORRELATIONWINDOW_DEFAULT_VALUE.
          * NGramSize is set to NGRAMSIZE_DEFAULT_VALUE.
@@ -50,7 +60,7 @@ class NGramGraph : public ProximityGraph<std::string, std::string>
          *  \param CorrelationWindowValue The new value for the CorrelationWindow variable.
          *  \param NGramSizeValue The new value for the NGramSize variable.
          */
-        NGramGraph(ProximityEvaluator<std::string> *newProximityEvaluator, StringSplitter *newSplitter, StringPayload *newPayload, unsigned int CorrelationWindowValue);
+        NGramGraph(ProximityEvaluator<std::string> *newProximityEvaluator, StringSplitter *newSplitter, StringPayload *newPayload, unsigned int CorrelationWindowValue, ProximityApproach* proximityApproach);
 
 
 
@@ -81,20 +91,12 @@ class NGramGraph : public ProximityGraph<std::string, std::string>
 
 
     protected:
-
-        /**
-         * \var CorrelationWindow The maximum distance of terms to be considered as correlated. Default is 3.
-         *
-         */
-        unsigned int CorrelationWindow;
-
-
-
-        /** Creates (or updates) an edge from vHead vertex to each vertex in the neighbors vector.
-         * \param vHead The vertex from which the edges begin.
-         * \param neighbors A vector containing the vertices who will be the tails of the edges.
-         */
-        void createEdgesToNeighbors(Graph(std::string)::vertex_descriptor vHead, vector<typename Graph(std::string)::vertex_descriptor> neighbors);
+	/**
+	 * \var approach The approach used to calculate proximity between the atoms.
+	 *
+	 */
+	ProximityApproach *approach;
+	
 };
 
 #endif // NGRAMGRAPH_H

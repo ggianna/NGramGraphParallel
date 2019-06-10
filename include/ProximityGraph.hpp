@@ -40,6 +40,22 @@ template <typename PayloadType, typename AtomType>
 class ProximityGraph : public UniqueVertexGraph<AtomType>
 {
     public:
+
+        /**
+         * \var splitter The splitter that will be used to break the payload into Atoms.
+         *
+         */
+        Splitter<PayloadType, AtomType> *splitter;
+
+
+        /**
+         * \var payload The data that the graph holds, which will be split into Atoms.
+         *
+         */
+        Payload<PayloadType> *payload;
+
+
+
         /** Default constructor. */
         ProximityGraph();
 
@@ -95,21 +111,6 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
          */
         ProximityEvaluator<AtomType> *evaluator;
 
-
-
-        /**
-         * \var splitter The splitter that will be used to break the payload into Atoms.
-         *
-         */
-        Splitter<PayloadType, AtomType> *splitter;
-
-
-
-        /**
-         * \var payload The data that the graph holds, which will be split into Atoms.
-         *
-         */
-        Payload<PayloadType> *payload;
 };
 
 

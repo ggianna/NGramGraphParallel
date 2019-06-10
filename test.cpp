@@ -23,8 +23,9 @@
 #include "UniqueVertexGraph.hpp"
 #include "StringAtom.hpp"
 #include "StringSplitter.hpp"
+#include "ProximityApproach.hpp"
 
-#define TEXT_PAYLOAD "This is a test sentence."
+#define TEXT_PAYLOAD "Hello World"
 
 using namespace std;
 
@@ -41,9 +42,12 @@ int main(){
     // Declare the payload of the Proximity Graph (the entity that will be split to atoms). We are using a text in this example, so it will be a string payload.
     StringPayload testStringPayload(TEXT_PAYLOAD);
 
+    // Choose the non-symmetric proximity approach.
+    ProximityApproach* approach = new SymmetricApproach();
+
     // Declare the Proximity Graph. We will split a text into n-grams, so we are using an NGramGraph which is a ProximityGraph for this use.
     // The NGramGraph has a built-in basic Proximity Evaluator so we won't explicitly pass one, but it needs a String Splitter and a String Payload to split.
-    NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2);
+    NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
 
     // Create the graph from the text (StringPayload) and print it in DOT format.
     testNGramGraph.createGraph();
@@ -56,7 +60,7 @@ int main(){
     cout << endl << endl << "-------------------------" << endl << endl << endl;
 
 
-
+    
     // An example of graph comparison:
 
     // Declare an instance of GraphSimilarity to hold the comparison's result
@@ -72,6 +76,7 @@ int main(){
     map<string, double> testSimilarityComponents =  testGraphSimilarity.getSimilarityComponents();
     cout << "Size Similarity: " << testSimilarityComponents["sizeSimilarity"] << endl;
     // Since they are the same graph, their size is equal, therefore the similarity is 1.
+    
 
     return 0;
 
