@@ -95,11 +95,46 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
         void setPayload(Payload<PayloadType> *newPayload) { payload = newPayload; }
 
 
+	/*
+	 * Getter for the edgeNameToWeightMap.
+	 */
+	const std::unordered_map<std::string, EDGE_WEIGHT_TYPE>& getEdgeNameToWeightMap() const { return edgeNameToWeightMap; }
+
+
+	/*
+	 * Get an edge's weight, given it's name.
+	 * \param name The edge's name.
+	 * \return The edge's weight.
+	 */
+	double getEdgeWeightByName(std::string name) { return edgeNameToWeightMap[name]; }
+
+
 
         /**
          * Creates the graph used internally by the ProximityGraph, according to the CorrelationWindow.
          */
         virtual void createGraph();
+
+
+	/*
+	 * Creates an edge from vertex vHead to vertex vTail. It inserts any vertex not already in the graph.
+	 * If the edge already exists, it's weight gets updated.
+	 * \param vHead The head of the egde, as a vertex descriptor
+	 * \param vTail The tail of the edge, as a vertex descriptor
+	 * \param edgeWeight The weight of the new edge (or update amount if the edge exists)
+	 */
+	void addEdge(typename Graph(AtomType)::vertex_descriptor vHead, typename Graph(AtomType)::vertex_descriptor vTail,
+			EDGE_WEIGHT_TYPE edgeWeight) override;
+
+
+	/*
+	 * Creates an edge from atom aHead to atom aTail. It inserts any atom not already in the graph.
+	 * If the edge already exists, it's weight gets updated.
+	 * \param aHead The head of the egde, as an atom
+	 * \param aTail The tail of the edge, as an atom
+	 * \param edgeWeight The weight of the new edge (or update amount if the edge exists)
+	 */
+	void addEdge(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight) override;
 
 
 
@@ -110,6 +145,13 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
          *
          */
         ProximityEvaluator<AtomType> *evaluator;
+
+
+	/**
+	 * \var edgeNameToWeightMap A hash map that holds (key,value) pairs, where keys are edges' names and values their weights.
+	 * This field is used because checking if an edge with a given name/label exists, is crucial in proximity graphs operations.
+	 */
+	std::unordered_map<std::string, EDGE_WEIGHT_TYPE> edgeNameToWeightMap;
 
 };
 

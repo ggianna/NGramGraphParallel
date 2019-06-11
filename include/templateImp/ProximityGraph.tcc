@@ -73,3 +73,58 @@ void ProximityGraph<PayloadType, AtomType>::createGraph()
         }
     }
 }
+
+template <typename PayloadType, typename AtomType>
+void ProximityGraph<PayloadType, AtomType>::addEdge(typename Graph(AtomType)::vertex_descriptor vHead,
+		typename Graph(AtomType)::vertex_descriptor vTail, EDGE_WEIGHT_TYPE edgeWeight)
+{
+    std::string edgeName;
+    std::pair<typename Graph(AtomType)::edge_descriptor, bool> edge = boost::edge(vHead, vTail, this->graph);
+    //check if edge exists
+    if (edge.second == false) // edge doesn't exist, so add it
+    {
+        EdgeWeightProperty ewp = edgeWeight;
+        boost::add_edge(vHead, vTail, ewp, this->graph);
+	edgeName = this->graph[vHead].toString() + "___" + this->graph[vTail].toString();
+	edgeNameToWeightMap[edgeName] = edgeWeight;
+
+    }
+    else    // edge.second == true, edge exists, so update its weight
+    {
+	edgeName = this->graph[vHead].toString() + "___" + this->graph[vTail].toString();
+        this->edgeWeightMap[edge.first] += edgeWeight;
+	edgeNameToWeightMap[edgeName] += edgeWeight;
+    }
+}
+
+template <typename PayloadType, typename AtomType>
+void ProximityGraph<PayloadType, AtomType>::addEdge(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight)
+{
+    typename Graph(AtomType)::vertex_descriptor vHead, vTail;
+    std::string edgeName;
+
+    // Locate the vertices
+    // Since addVertex() will check if the vertex already exists, a simple call will return the descriptor to the (either new or found) vertex we want.
+    vHead = this->addVertex(aHead);
+    vTail = this->addVertex(aTail);
+
+    // vertices located, search if edge already exists
+    std::pair<typename Graph(AtomType)::edge_descriptor, bool> edge = boost::edge(vHead, vTail, this->graph);
+    //check if edge exists
+//    std::cout << "Exists: " << edge.second << std::endl;    // DEBUG
+    if (edge.second == false) // edge doesn't exist, so add it
+    {
+        EdgeWeightProperty ewp = edgeWeight;
+        boost::add_edge(vHead, vTail, ewp, this->graph);
+	edgeName = aHead.toString() + "___" + aTail.toString();
+	edgeNameToWeightMap[edgeName] = edgeWeight;
+//        std::cout << "Exists: " << boost::edge(vHead, vTail, graph).second << " with weight " << boost::get( boost::edge_weight, graph, boost::edge(vHead, vTail, graph).first ) << std::endl;  // DEBUG
+    }
+    else    // edge.second == true, edge exists, so update its weight
+    {
+	edgeName = aHead.toString() + "___" + aTail.toString();
+        this->edgeWeightMap[edge.first] += edgeWeight;
+	edgeNameToWeightMap[edgeName] = edgeWeight;
+//        std::cout << "Exists: " << boost::edge(vHead, vTail, graph).second << " with weight " << boost::get( boost::edge_weight, graph, boost::edge(vHead, vTail, graph).first ) << std::endl;  // DEBUG
+    }
+}

@@ -72,10 +72,13 @@ int main(){
     // Compare the previous graph with itself and store the result to testGraphSimilarity
     testGraphSimilarity = testGraphComparator.compare(testNGramGraph, testNGramGraph);
 
-    // Display the size similarity (from the various similarity components) of the two compared graphs.
+    // Display all defined similarities of the two compared graphs.
     map<string, double> testSimilarityComponents =  testGraphSimilarity.getSimilarityComponents();
     cout << "Size Similarity: " << testSimilarityComponents["sizeSimilarity"] << endl;
-    // Since they are the same graph, their size is equal, therefore the similarity is 1.
+    cout << "Value Similarity: " << testSimilarityComponents["valueSimilarity"] << endl;
+    cout << "Normalized Value Similarity: " << testSimilarityComponents["normalizedValueSimilarity"] << endl;
+    cout << "Containment Value Similarity: " << testSimilarityComponents["containmentSimilarity"] << endl;
+    // Since they are the same graph, all similarities should be equal to 1.
     
 
     return 0;

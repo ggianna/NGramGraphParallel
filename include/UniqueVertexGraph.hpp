@@ -105,7 +105,8 @@ class UniqueVertexGraph
          * \param vTail The vertex descriptor of the Atom that is the tail of the edge that will be added to the graph.
          * \param edgeWeight The weight of the edge that will be added/updated to the graph.
          */
-        void addEdge(typename Graph(AtomType)::vertex_descriptor vHead, typename Graph(AtomType)::vertex_descriptor vTail, EDGE_WEIGHT_TYPE edgeWeight);
+        virtual void addEdge(typename Graph(AtomType)::vertex_descriptor vHead,
+		       	typename Graph(AtomType)::vertex_descriptor vTail, EDGE_WEIGHT_TYPE edgeWeight);
 
 
 
@@ -116,7 +117,7 @@ class UniqueVertexGraph
          * \param aTail The Atom that is the tail of the edge that will be added to the graph.
          * \param edgeWeight The weight of the edge that will be added/updated to the graph.
          */
-        void addEdge(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight);
+        virtual void addEdge(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight);
 
 
 

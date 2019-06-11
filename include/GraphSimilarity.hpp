@@ -46,9 +46,10 @@ class GraphSimilarity : public Similarity
          * \param valueSimilarity (double) The valueSimilarity component value.
          * \param containmentSimilarity (double) The containmentSimilarity component value.
          * \param sizeSimilarity (double) The sizeSimilarity component value.
+	 * \param normalizedValueSimilarity (double) The normalizedValueSimilarity component value.
          *
          */
-        GraphSimilarity(double valueSimilarity, double containmentSimilarity, double sizeSimilarity);
+        GraphSimilarity(double sizeSimilarity, double valueSimilarity, double normalizedValueSimilarity, double containmentSimilarity);
 
 
 
@@ -91,6 +92,12 @@ class GraphSimilarity : public Similarity
          * Similarity regarding the number of edges of the graphs
          */
         double sizeSimilarity;
+
+
+	/*
+	 * \var normalizedValueSimilarity
+	 */
+	double normalizedValueSimilarity;
 };
 
 #endif // GRAPHSIMILARITY_H
