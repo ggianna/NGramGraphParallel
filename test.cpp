@@ -24,6 +24,7 @@
 #include "StringAtom.hpp"
 #include "StringSplitter.hpp"
 #include "ProximityApproach.hpp"
+#include "NGGOperator.hpp"
 
 #define TEXT_PAYLOAD "Hello World"
 
@@ -42,12 +43,13 @@ int main(){
     // Declare the payload of the Proximity Graph (the entity that will be split to atoms). We are using a text in this example, so it will be a string payload.
     StringPayload testStringPayload(TEXT_PAYLOAD);
 
-    // Choose the non-symmetric proximity approach.
+    // Choose the symmetric proximity approach.
     ProximityApproach* approach = new SymmetricApproach();
 
     // Declare the Proximity Graph. We will split a text into n-grams, so we are using an NGramGraph which is a ProximityGraph for this use.
     // The NGramGraph has a built-in basic Proximity Evaluator so we won't explicitly pass one, but it needs a String Splitter and a String Payload to split.
     NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
+
 
     // Create the graph from the text (StringPayload) and print it in DOT format.
     testNGramGraph.createGraph();
@@ -55,6 +57,14 @@ int main(){
     testNGramGraph.printGraphvizToFile("out.dot");
 
 
+    NGGMergeOperator mergeOp(&testNGramGraph, &testNGramGraph);
+    NGramGraph opValue = mergeOp.apply();
+
+    if (testNGramGraph == testNGramGraph)
+	    std::cout << std::endl << "== operator OK" << std::endl;
+
+    if (opValue == testNGramGraph)
+	    std::cout << std::endl << "merge operator OK" <<std::endl;
 
     // -------------------------------------------------------------------------------------------
     cout << endl << endl << "-------------------------" << endl << endl << endl;

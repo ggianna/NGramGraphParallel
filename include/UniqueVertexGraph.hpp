@@ -131,7 +131,7 @@ class UniqueVertexGraph
         /** Returns how many edges the graph has.
          * \return The number of graph's edges.
          */
-        int numberOfEdges();
+        int numberOfEdges() const;
 
 
 

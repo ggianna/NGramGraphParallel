@@ -89,6 +89,14 @@ class NGramGraph : public ProximityGraph<std::string, std::string>
         void createGraph();
 
 
+	/**
+	 * Compares this NGramGraph object with another one.
+	 * \param A reference to the NGramGraph object to compare against.
+	 * \return A bool value, true if the two objects are considered equal, false otherwise.
+	 */
+	bool operator==(const NGramGraph& other);
+
+
 
     protected:
 	/**

@@ -28,6 +28,7 @@
 
 // defines
 #define EDGE_WEIGHT_DEFAULT_VALUE 1.0
+#define EDGE_LABEL_SEPARATOR "___"
 
 
 
@@ -102,11 +103,19 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
 
 
 	/*
-	 * Get an edge's weight, given it's name.
+	 * Finds an edge's weight, given it's name.
 	 * \param name The edge's name.
-	 * \return The edge's weight.
+	 * \return The edge's weight. If the edge is not present, 0 is returned.
 	 */
-	double getEdgeWeightByName(std::string name) { return edgeNameToWeightMap[name]; }
+	double getEdgeWeightByName(std::string name);
+
+
+	/**
+	 * Updates the weight of an edge.
+	 * \param name The edge's name.
+	 * \param weight The edge's new weight.
+	 */
+	//void updateEdgeWeight(std::string name, EDGE_WEIGHT_TYPE weight) { edgeNameToWeightMap[name] = weight; }
 
 
 
@@ -137,6 +146,15 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
 	void addEdge(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight) override;
 
 
+	/*
+	 * Updates an edge's weight. The edge must already be present on the graph.
+	 * \param aHead The head of the edge.
+	 * \param aTail The tail of the edge.
+	 * \param weight The new weight of the edge.
+	 */
+	void updateEdgeWeight(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE weight);
+
+
 
     protected:
 
@@ -149,7 +167,7 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
 
 	/**
 	 * \var edgeNameToWeightMap A hash map that holds (key,value) pairs, where keys are edges' names and values their weights.
-	 * This field is used because checking if an edge with a given name/label exists, is crucial in proximity graphs operations.
+	 * This field is used because checking if an edge with a given name/label exists, is crucial in proximity graph operations.
 	 */
 	std::unordered_map<std::string, EDGE_WEIGHT_TYPE> edgeNameToWeightMap;
 

@@ -56,3 +56,26 @@ void NGramGraph::createGraph()
     approach->createGraph(this);
 }
 
+
+bool NGramGraph::operator==(const NGramGraph& other)
+{
+	if (numberOfEdges() != other.numberOfEdges()) {
+		return false;
+	}
+
+	bool ret = true;
+	std::unordered_map<std::string, EDGE_WEIGHT_TYPE>::const_iterator got;
+	for (auto const& elem : other.getEdgeNameToWeightMap()) {	
+		got = edgeNameToWeightMap.find(elem.first);
+		if (got == edgeNameToWeightMap.end()) { // Edge name not found.
+			ret = false;
+			break;
+		}
+		else if (got->second != elem.second) { //Edge name found but with different weight.
+			ret = false;
+			break;
+		}
+	}
+
+	return ret;
+}

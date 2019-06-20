@@ -28,7 +28,8 @@ ProximityGraph<PayloadType, AtomType>::ProximityGraph()
 
 
 template <typename PayloadType, typename AtomType>
-ProximityGraph<PayloadType, AtomType>::ProximityGraph(ProximityEvaluator<AtomType> *newEvaluator, Splitter<PayloadType, AtomType> *newSplitter, Payload<PayloadType> *newPayload)
+ProximityGraph<PayloadType, AtomType>::ProximityGraph(ProximityEvaluator<AtomType> *newEvaluator,
+		Splitter<PayloadType, AtomType> *newSplitter, Payload<PayloadType> *newPayload)
 {
     evaluator = newEvaluator;
     splitter = newSplitter;
@@ -98,7 +99,8 @@ void ProximityGraph<PayloadType, AtomType>::addEdge(typename Graph(AtomType)::ve
 }
 
 template <typename PayloadType, typename AtomType>
-void ProximityGraph<PayloadType, AtomType>::addEdge(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight)
+void ProximityGraph<PayloadType, AtomType>::addEdge(Atom<AtomType> aHead,
+		Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight)
 {
     typename Graph(AtomType)::vertex_descriptor vHead, vTail;
     std::string edgeName;
@@ -124,7 +126,48 @@ void ProximityGraph<PayloadType, AtomType>::addEdge(Atom<AtomType> aHead, Atom<A
     {
 	edgeName = aHead.toString() + "___" + aTail.toString();
         this->edgeWeightMap[edge.first] += edgeWeight;
-	edgeNameToWeightMap[edgeName] = edgeWeight;
+	edgeNameToWeightMap[edgeName] += edgeWeight;
 //        std::cout << "Exists: " << boost::edge(vHead, vTail, graph).second << " with weight " << boost::get( boost::edge_weight, graph, boost::edge(vHead, vTail, graph).first ) << std::endl;  // DEBUG
+    }
+}
+
+template <typename PayloadType, typename AtomType>
+EDGE_WEIGHT_TYPE ProximityGraph<PayloadType, AtomType>::getEdgeWeightByName(std::string edgeName)
+{
+	std::unordered_map<std::string, EDGE_WEIGHT_TYPE>::const_iterator got = edgeNameToWeightMap.find(edgeName);
+	if (got == edgeNameToWeightMap.end()) //Edge name not found
+		return 0;
+	else
+		return got->second;
+}
+
+template <typename PayloadType, typename AtomType>
+void ProximityGraph<PayloadType, AtomType>::updateEdgeWeight(Atom<AtomType> aHead,
+		Atom<AtomType> aTail, EDGE_WEIGHT_TYPE edgeWeight)
+{
+
+    typename Graph(AtomType)::vertex_descriptor vHead, vTail;
+    std::string edgeName = aHead.toString() + "___" + aTail.toString();
+
+    // Locate the vertices
+    // Since addVertex() will check if the vertex already exists, a simple call will return the descriptor to the (either new or found) vertex we want.
+    vHead = this->addVertex(aHead);
+    vTail = this->addVertex(aTail);
+
+    // vertices located, search if edge already exists
+    std::pair<typename Graph(AtomType)::edge_descriptor, bool> edge = boost::edge(vHead, vTail, this->graph);
+    //check if edge exists
+    if (edge.second == false) // edge doesn't exist
+    {
+        EdgeWeightProperty ewp = edgeWeight;
+        boost::add_edge(vHead, vTail, ewp, this->graph);
+	edgeNameToWeightMap[edgeName] = edgeWeight;
+	std::cout << std::endl << "ProximityGraph::updateEdgeWeight(): BUG(Edge not present in the graph)" << std::endl;
+	//TODO Throw EdgeNotPresentException
+    }
+    else    // edge exists, so update its weight
+    {
+        this->edgeWeightMap[edge.first] = edgeWeight;
+	edgeNameToWeightMap[edgeName] = edgeWeight;
     }
 }

@@ -160,7 +160,7 @@ int UniqueVertexGraph<AtomType>::numberOfVertices()
 
 
 template <typename AtomType>
-int UniqueVertexGraph<AtomType>::numberOfEdges()
+int UniqueVertexGraph<AtomType>::numberOfEdges() const
 {
     return boost::num_edges(graph);
 }
