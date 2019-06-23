@@ -24,7 +24,8 @@
 #include "StringAtom.hpp"
 #include "StringSplitter.hpp"
 #include "ProximityApproach.hpp"
-#include "NGGOperator.hpp"
+#include "DocumentClass.hpp"
+#include "NGGMergeOperator.hpp"
 
 #define TEXT_PAYLOAD "Hello World"
 
@@ -57,11 +58,15 @@ int main(){
     testNGramGraph.printGraphvizToFile("out.dot");
 
 
+    DocumentClass docClass;
+    docClass.update(&testNGramGraph);
+    if (docClass == testNGramGraph) {
+        std::cout << std::endl << "update method of DocumentClass OK" << std::endl;
+    }
+
+    
     NGGMergeOperator mergeOp(&testNGramGraph, &testNGramGraph);
     NGramGraph opValue = mergeOp.apply();
-
-    if (testNGramGraph == testNGramGraph)
-	    std::cout << std::endl << "== operator OK" << std::endl;
 
     if (opValue == testNGramGraph)
 	    std::cout << std::endl << "merge operator OK" <<std::endl;
