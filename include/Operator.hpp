@@ -17,7 +17,7 @@ protected:
 	std::vector<OperandType *> operands;
 
 	/*
-	 * Construct accesible to derived classes.
+	 * Constructor accesible to derived classes.
 	 */
 	Operator(unsigned int arity) : operands(arity) {}
 
