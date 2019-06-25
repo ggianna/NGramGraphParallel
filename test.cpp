@@ -59,15 +59,19 @@ int main(){
 
 
     DocumentClass docClass;
+    // update docClass (which is empty) with testNGramGraph (the graph produced from TEXT_PAYLOAD)
     docClass.update(&testNGramGraph);
+
+    // because docClass was initially empty, docClass and testNGramGraph should be the same now
     if (docClass == testNGramGraph) {
         std::cout << std::endl << "update method of DocumentClass OK" << std::endl;
     }
 
-    
+    // merge testNGramGraph with itself and get the result in a new NGramGraph object
     NGGMergeOperator mergeOp(&testNGramGraph, &testNGramGraph);
     NGramGraph opValue = mergeOp.apply();
 
+    // the result of the merge operation should be the same with testNGramGraph
     if (opValue == testNGramGraph)
 	    std::cout << std::endl << "merge operator OK" <<std::endl;
 
