@@ -50,6 +50,9 @@ std::string tableSizeColumnElem(size_t s) {
 int main(int argc, char **argv) {
 	if (argc != 2) {
 		std::cout << "Usage: ./testHashFunctions <table_sizes_file>" << std::endl;
+		std::cout << "<table_sizes_file> is the name of the file " <<
+			     "containing the table sizes to be tested, one in each line." <<
+			     std::endl;
 		exit(1);
 	}
 
@@ -85,7 +88,7 @@ int main(int argc, char **argv) {
 		docGraph = new NGramGraph(nullptr, &sspliter, &spayload, 2, approach);
 		docGraph->createGraph();
 		keysNo = docGraph->numberOfEdges();
-		cout << std::endl << "Measurments for sample file '" << fileName << "' (" << keysNo << " n-grams)" << std::endl;
+		cout << std::endl << "Measurments for sample file '" << fileName << "' (" << keysNo << " NGramGraph edges)" << std::endl;
 
 		std::cout << "\t\t";
 		for (auto& h : hFuns) {
