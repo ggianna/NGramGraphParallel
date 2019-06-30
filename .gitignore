@@ -34,3 +34,5 @@
 test
 testHashFunctions
 out.dot
+createHashTableTest
+createClassGraphs
