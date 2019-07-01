@@ -2,7 +2,7 @@ SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
 OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o
-OUT		= test testHashFunctions createClassGraphs
+OUT		= test createClassGraphs
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER)
 OPENCL_LIB	= -lOpenCL
@@ -15,9 +15,6 @@ all: $(OUT)
 
 createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
-
-testHashFunctions: $(OBJECTS) $(SOURCES_FOLDER)/testHashFunctions.o
-	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/testHashFunctions.o
 
 test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o
