@@ -107,7 +107,7 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
 	 * \param name The edge's name.
 	 * \return The edge's weight. If the edge is not present, 0 is returned.
 	 */
-	double getEdgeWeightByName(std::string name);
+	EDGE_WEIGHT_TYPE getEdgeWeightByName(std::string name);
 
 
 	/**
@@ -153,7 +153,6 @@ class ProximityGraph : public UniqueVertexGraph<AtomType>
 	 * \param weight The new weight of the edge.
 	 */
 	void updateEdgeWeight(Atom<AtomType> aHead, Atom<AtomType> aTail, EDGE_WEIGHT_TYPE weight);
-
 
 
     protected:

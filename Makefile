@@ -1,8 +1,8 @@
 SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
-OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o
-OUT		= test createClassGraphs
+OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o
+OUT		= createClassGraphs testOpenclUpdate
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER)
 OPENCL_LIB	= -lOpenCL
@@ -10,23 +10,23 @@ OPENCL_LIB	= -lOpenCL
 all: $(OUT)
 
 
-#createHashTableTest: createHashTableTest.cpp
-#	$(CC) -std=c++11 -Wall -o $@ createHashTableTest.cpp $(OPENCL_LIB)
+testOpenclUpdate: $(OBJECTS) $(SOURCES_FOLDER)/testOpenclUpdate.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/testOpenclUpdate.o $(OPENCL_LIB)
 
 createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
-	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o $(OPENCL_LIB)
 
-test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
-	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o
+#test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
+#	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o $(OPENCL_LIB)
 
-$(SOURCES_FOLDER)/createClassGraphs.o: createClassGraphs.cpp
+$(SOURCES_FOLDER)/testOpenclUpdate.o: testOpenclUpdate.cpp $(HEADERS_FOLDER)/DocumentClassComponent.hpp $(HEADERS_FOLDER)/FileUtils.hpp
+	$(CC) $(FLAGS) testOpenclUpdate.cpp -o $@
+
+$(SOURCES_FOLDER)/createClassGraphs.o: createClassGraphs.cpp $(HEADERS_FOLDER)/FileUtils.hpp
 	$(CC) $(FLAGS) createClassGraphs.cpp -o $@
 
-$(SOURCES_FOLDER)/testHashFunctions.o: testHashFunctions.cpp $(HEADERS_FOLDER)/HashFunction.hpp
-	$(CC) $(FLAGS) testHashFunctions.cpp -o $@
-
-$(SOURCES_FOLDER)/test.o: test.cpp
-	$(CC) $(FLAGS) test.cpp -o $@
+#$(SOURCES_FOLDER)/test.o: test.cpp
+#	$(CC) $(FLAGS) test.cpp -o $@
 
 $(SOURCES_FOLDER)/GraphSimilarity.o: $(SOURCES_FOLDER)/GraphSimilarity.cpp $(HEADERS_FOLDER)/GraphSimilarity.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/GraphSimilarity.cpp -o $@
@@ -52,8 +52,14 @@ $(SOURCES_FOLDER)/NGGUpdateOperator.o: $(SOURCES_FOLDER)/NGGUpdateOperator.cpp $
 $(SOURCES_FOLDER)/NGGMergeOperator.o: $(SOURCES_FOLDER)/NGGMergeOperator.cpp $(HEADERS_FOLDER)/NGGMergeOperator.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/NGGMergeOperator.cpp -o $@
 
-$(SOURCES_FOLDER)/DocumentClass.o: $(SOURCES_FOLDER)/DocumentClass.cpp $(HEADERS_FOLDER)/DocumentClass.hpp
+$(SOURCES_FOLDER)/DocumentClass.o: $(SOURCES_FOLDER)/DocumentClass.cpp $(HEADERS_FOLDER)/DocumentClass.hpp $(HEADERS_FOLDER)/DocumentClassComponent.hpp $(HEADERS_FOLDER)/FileUtils.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/DocumentClass.cpp -o $@
+
+$(SOURCES_FOLDER)/OpenclUpdateComputation.o: $(SOURCES_FOLDER)/OpenclUpdateComputation.cpp $(HEADERS_FOLDER)/OpenclUpdateComputation.hpp
+	$(CC) $(FLAGS) $(SOURCES_FOLDER)/OpenclUpdateComputation.cpp -o $@
+
+$(SOURCES_FOLDER)/FileUtils.o: $(SOURCES_FOLDER)/FileUtils.cpp $(HEADERS_FOLDER)/FileUtils.hpp
+	$(CC) $(FLAGS) $(SOURCES_FOLDER)/FileUtils.cpp -o $@
 
 
 clean:

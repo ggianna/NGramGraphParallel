@@ -1,1 +1,2 @@
 1. In update and merge operations, the big graph's edges who are not present in the small graph, don't have their weights updated.
+2. EDGE_WEIGHT_TYPE defined twice

@@ -29,7 +29,7 @@
 
 
 // defines
-#define EDGE_WEIGHT_TYPE double
+#define EDGE_WEIGHT_TYPE float
 // graph macro
 #define Graph(AtomType) boost::adjacency_list<boost::vecS,boost::vecS,boost::bidirectionalS,Atom<AtomType>,EdgeWeightProperty>
 

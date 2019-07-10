@@ -1,5 +1,5 @@
-#ifndef NGGUPDATEOPERATOR_H
-#define NGGUPDATEOPERATOR_H
+#ifndef NGG_UPDATE_OPERATOR_H
+#define NGG_UPDATE_OPERATOR_H
 
 #include "BinaryOperator.hpp"
 #include "NGramGraph.hpp"
@@ -16,16 +16,8 @@ private:
 	/*
 	 * The learning factor to be used while applying the update operator.
 	 */
-	double learningFactor;
+	float learningFactor;
 
-
-	/*
-	 * Utility function to break an edge label to it's constituents,
-	 * e.g. the string representations of the head and tail atoms.
-	 * \param label The edge's label.
-	 * \return The string constituents of the label, as a pair of strings.
-	 */
-	std::pair<std::string, std::string> extractHeadAndTailFromEdgeLabel(std::string label);
 
 public:
 
@@ -48,7 +40,7 @@ public:
 	 * Sets the learning factor.
 	 * \param l The new learning factor.
 	 */
-	void setLearningFactor(double l) { learningFactor = l; }
+	void setLearningFactor(float l) { learningFactor = l; }
 
 
 	/*
@@ -63,6 +55,15 @@ public:
 	 * \param doc Pointer to the new operand.
 	 */
 	void setDocumentOperand(NGramGraph *doc) { setSecondOperand(doc); }
+
+
+	/*
+	 * Utility function to break an edge label to it's constituents,
+	 * e.g. the string representations of the head and tail atoms.
+	 * \param label The edge's label.
+	 * \return The string constituents of the label, as a pair of strings.
+	 */
+	std::pair<std::string, std::string> extractHeadAndTailFromEdgeLabel(std::string label);
 };
 
 #endif // NGGUPDATEOPERATOR_H

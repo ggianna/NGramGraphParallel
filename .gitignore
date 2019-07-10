@@ -36,3 +36,10 @@ testHashFunctions
 out.dot
 createHashTableTest
 createClassGraphs
+testOpenclUpdate
+components/
+createHashTable.cl
+createHashTableOnGPU.cpp
+createHashTableTest.cpp
+OpenclDataStructures.hpp
+testDocumentClassComponent.cpp
