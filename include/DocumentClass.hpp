@@ -29,7 +29,7 @@ protected:
 	NGGUpdateOperator updateOp;
 
 	/*
-	 * These are OpenCL-related fields
+	 * These are OpenCL-related fields.
 	 */
 	std::size_t hash_table_size;
 	EDGE_WEIGHT_TYPE *hash_table;
@@ -37,9 +37,21 @@ protected:
 	vector<unsigned long> hash_values;
 
 	/*
-	 * Computes and returns the learning factor based on the current number of constituents
+	 * An OpenclUpdateCompuation object to come in handy when updating the class with OpenCL.
+	 */
+	OpenclUpdateComputation oclUpdateComp;
+
+	/*
+	 * Computes and returns the learning factor based on the current number of constituents.
 	 */
 	float computeLearningFactor();
+
+	/*
+	 * Gets new edges from a component and adds them to the OpenCL-related fields of the class.
+	 * This function is called after an OpenclUpdateComputation has been executed with this specific component.
+	 * \param c Pointer to the DocumentClassComponent object that has been used to update the class
+	 */
+	void getNewEdges(DocumentClassComponent *c);
 
 
 public:
@@ -93,6 +105,15 @@ public:
 	 * \param program Pointer to the OpenCL Program object that contains the udpate kernel
 	 */
 	void constructWithOpenCL(std::string componentsDir, Context *context, CommandQueue *queue, Program *program);
+
+
+	/*
+	 * Returns a pointer to hash_table, to be used by OpenCL update operations.
+	 */
+	EDGE_WEIGHT_TYPE * getOCLTable() { return hash_table; }
+
+	std::size_t getOCLTableSize() { return hash_table_size; }
+
 };
 
 #endif // DOCUMENT_CLASS_H

@@ -45,7 +45,6 @@ int main() {
 		FileUtils::read_directory(TOPICS_ROOT + topic, topic_files);
 		// Iterate over every file of the current topic/subdirectory and update the current DocumentClass object with it
 		for (const auto& file : topic_files) {
-
 			// Get the contents of the file into a string and set the spayload with it.
 			spayload.setPayload(FileUtils::read_file_to_string(TOPICS_ROOT + topic + "/" + file));
 

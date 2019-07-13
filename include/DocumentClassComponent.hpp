@@ -27,7 +27,7 @@ private:
 	/* Pointer to the hash table */
 	EDGE_WEIGHT_TYPE *hash_table;
 
-	/* This array is used to indicate new edges added from the component to the class graph */
+	/* Pointer to unsigned char array, where 1s indicate a new edge that the component brings to the class */
 	unsigned char *flags;
 
 	/* Holds the labels of the edges */

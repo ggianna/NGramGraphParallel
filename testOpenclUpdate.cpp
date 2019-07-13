@@ -12,7 +12,7 @@
 
 
 #define OPENCL_KERNELS_DIR "./ngg_opencl_kernels/"
-#define HASH_TABLE_SIZE 1000000
+#define HASH_TABLE_SIZE 2000000
 
 
 
@@ -97,7 +97,6 @@ int main(int argc, char **argv) {
 	for (auto& topic : topics) {
 		std::cout << "Creating class graph for topic '" << topic << "'...";
 		std::cout.flush();
-		//printf("Creating class graph for topic '%s'...", topic.c_str());
 		class_graphs[cnt] = new DocumentClass(HASH_TABLE_SIZE);
 		class_graphs[cnt]->constructWithOpenCL(topics_dir + topic + "/", &context, &queue, &program);
 		std::cout << "\t[OK]\n";

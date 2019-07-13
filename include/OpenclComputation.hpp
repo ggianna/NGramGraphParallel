@@ -27,7 +27,7 @@ protected:
 	Program *program;
 	Kernel *kernel;
 	std::string kernel_name;
-	std::vector<Buffer *> buffers;
+	std::vector<Buffer> buffers;
 
 	/* Loads/creates the computation kernel from program */
 	virtual void loadKernel() {
@@ -46,6 +46,7 @@ protected:
 
 	/* Read buffers that contain useful data to CPU ram */
 	virtual void readBuffers() = 0;
+
 
 	/* Compute the final result and return it */
 	virtual ReturnType computeResult() = 0;

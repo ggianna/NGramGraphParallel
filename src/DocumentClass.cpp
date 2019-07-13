@@ -5,7 +5,8 @@ DocumentClass::DocumentClass() : NGramGraph(), numberOfConstituents(0), updateOp
 
 
 DocumentClass::DocumentClass(std::size_t ts) : NGramGraph(), numberOfConstituents(0), updateOp(this, nullptr, 1.0),
-			hash_table_size(ts), edge_labels(ts), hash_values(ts)
+			hash_table_size(ts), edge_labels(ts), hash_values(ts), oclUpdateComp(nullptr, nullptr,
+			nullptr, this, nullptr)
 {
 	// Allocate C-style array and initialize to 0
 	hash_table  = new EDGE_WEIGHT_TYPE[hash_table_size]();
@@ -32,14 +33,28 @@ void DocumentClass::update(NGramGraph *newDoc, double l) {
 float DocumentClass::computeLearningFactor() {
 	return ( 1 - ( (numberOfConstituents - 1) / float(numberOfConstituents) ) );
 }
-	
 
+
+void DocumentClass::getNewEdges(DocumentClassComponent *c) {
+	unsigned char *flags = c->getFlags();
+	std::vector<std::string>& component_edges = c->getEdgeLabels();
+	std::vector<unsigned long>& component_hash_values = c->getHashValues();
+	for (std::size_t i=0; i<hash_table_size; i++) {
+		if (flags[i] == 1) {
+			edge_labels[i] = component_edges[i];
+			hash_values[i] = component_hash_values[i];
+		}
+	}
+}
+
+
+/*
 void DocumentClass::updateWithOpenCL(DocumentClassComponent *component, Context *context, CommandQueue *queue, Program *program) {
 	// Assert that hash table sizes of this object and component object are equal
 	// TODO Throw exception
 	if (hash_table_size != component->getHashTableSize()) {
 		cout << "DocumentClass::updateWithOpenCL(): hash table sizes of "
-		     <<	"document class and class component are not equal.";
+		     <<	"class and component are not equal.";
 		exit(1);
 	}
 	
@@ -51,10 +66,12 @@ void DocumentClass::updateWithOpenCL(DocumentClassComponent *component, Context 
 	vector<std::string>& component_edges = component->getEdgeLabels();
 	vector<unsigned long>& component_hash_values = component->getHashValues();
 
-	// Create an OpenclUpdateComputation object and start the computation
-	OpenclUpdateComputation updateComp(context, queue, program, hash_table, component_hash_table,
-			flags, hash_table_size, learning_factor);
-	updateComp.apply();
+	oclUpdateComp.setOpenclFields(context, queue, program);
+	oclUpdateComp.setSampleTable(component_hash_table);
+	oclUpdateComp.setFlags(flags);
+	oclUpdateComp.setLearningFactor(learning_factor);
+
+	oclUpdateComp.apply();
 	
 	// The hash_table array is now updated and the flags array indicates the new edges
 	Atom<std::string> aSource, aTarget;
@@ -70,7 +87,7 @@ void DocumentClass::updateWithOpenCL(DocumentClassComponent *component, Context 
 		}
 	}
 }
-
+*/
 
 void DocumentClass::constructWithOpenCL(std::string componentsDir, Context *context, CommandQueue *queue, Program *program) {
 	StringSplitter splitter;
@@ -79,15 +96,29 @@ void DocumentClass::constructWithOpenCL(std::string componentsDir, Context *cont
 	std::vector<std::string> componentFiles;
 	DocumentClassComponent *component = new DocumentClassComponent(hash_table_size,
 			CorrelationWindow, &splitter, &payload, &hashFunction);
+	float l;
 
 	if (componentsDir.back() != '/') {
 		componentsDir += "/";
 	}
+
 	FileUtils::read_directory(componentsDir, componentFiles);
+
+	oclUpdateComp.setCurrentUpdatesNo(0);
+	oclUpdateComp.setTotalUpdatesNo(componentFiles.size());
+	oclUpdateComp.setOpenclFields(context, queue, program);
+	oclUpdateComp.setComponent(component);
+
 	for (auto& file : componentFiles) {
+		++numberOfConstituents;
+		l = computeLearningFactor();
+		oclUpdateComp.setLearningFactor(l);
 		payload.setPayload(FileUtils::read_file_to_string(componentsDir + file));
 		component->fillTables();
-		updateWithOpenCL(component, context, queue, program);
+		oclUpdateComp.apply();
+		getNewEdges(component);
 		component->reset();
 	}
+
+	delete component;
 }

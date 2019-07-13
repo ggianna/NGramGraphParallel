@@ -43,3 +43,6 @@ createHashTableOnGPU.cpp
 createHashTableTest.cpp
 OpenclDataStructures.hpp
 testDocumentClassComponent.cpp
+serial_vs_parallel_update
+profile_update_kernel
+fast_dir

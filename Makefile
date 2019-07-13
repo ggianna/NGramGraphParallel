@@ -2,13 +2,19 @@ SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
 OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o
-OUT		= createClassGraphs testOpenclUpdate
+OUT		= createClassGraphs testOpenclUpdate serial_vs_parallel_update profile_update_kernel
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER)
 OPENCL_LIB	= -lOpenCL
 
 all: $(OUT)
 
+
+profile_update_kernel: $(SOURCES_FOLDER)/profile_update_kernel.o
+	$(CC) -o $@ $(SOURCES_FOLDER)/profile_update_kernel.o $(OPENCL_LIB)
+
+serial_vs_parallel_update: $(OBJECTS) $(SOURCES_FOLDER)/serial_vs_parallel_update.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/serial_vs_parallel_update.o $(OPENCL_LIB)
 
 testOpenclUpdate: $(OBJECTS) $(SOURCES_FOLDER)/testOpenclUpdate.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/testOpenclUpdate.o $(OPENCL_LIB)
@@ -18,6 +24,12 @@ createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
 
 #test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
 #	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o $(OPENCL_LIB)
+
+$(SOURCES_FOLDER)/profile_update_kernel.o: profile_update_kernel.cpp
+	$(CC) $(FLAGS) profile_update_kernel.cpp -o $@
+
+$(SOURCES_FOLDER)/serial_vs_parallel_update.o: serial_vs_parallel_update.cpp
+	$(CC) $(FLAGS) serial_vs_parallel_update.cpp -o $@
 
 $(SOURCES_FOLDER)/testOpenclUpdate.o: testOpenclUpdate.cpp $(HEADERS_FOLDER)/DocumentClassComponent.hpp $(HEADERS_FOLDER)/FileUtils.hpp
 	$(CC) $(FLAGS) testOpenclUpdate.cpp -o $@
