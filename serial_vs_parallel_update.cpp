@@ -77,7 +77,7 @@ void construct_class_graph_serial(std::string dir) {
 		sample_ngg->createGraph();
 
 		// Update the current DocumentClass object with the above NGramGraph object
-		class_graph->update(sample_ngg);
+		class_graph->update(sample_ngg, true);
 
 		delete sample_ngg;
 	}

@@ -13,7 +13,8 @@ DocumentClass::DocumentClass(std::size_t ts) : NGramGraph(), numberOfConstituent
 }
 
 
-void DocumentClass::update(NGramGraph *newDoc) {
+void DocumentClass::update(NGramGraph *newDoc, bool precise) {
+	updateOp.setPrecise(precise);
 	numberOfConstituents += 1;
 	float new_l = computeLearningFactor();
 	updateOp.setLearningFactor(new_l);
@@ -22,7 +23,8 @@ void DocumentClass::update(NGramGraph *newDoc) {
 }
 
 
-void DocumentClass::update(NGramGraph *newDoc, double l) {
+void DocumentClass::update(NGramGraph *newDoc, double l, bool precise) {
+	updateOp.setPrecise(precise);
 	numberOfConstituents += 1;
 	updateOp.setLearningFactor(l);
 	updateOp.setDocumentOperand(newDoc);

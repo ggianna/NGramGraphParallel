@@ -18,6 +18,13 @@ private:
 	 */
 	float learningFactor;
 
+	/*
+	 * A bool variable that determines whether to do a precise update operation or not.
+	 * A precise update operation iterates over the edges of both the class graph and the document graph,
+	 * while a non precise one iterates over the edges of the document graph only.
+	 */
+	bool precise;
+
 
 public:
 
@@ -27,7 +34,8 @@ public:
 	 * \param newDoc Pointer to the new document n-gram graph that will join the class.
 	 * \param l The learning factor to be used in the update operation.
 	 */
-	NGGUpdateOperator(NGramGraph *classGraph, NGramGraph *newDoc, double l) : BinaryOperator(classGraph, newDoc), learningFactor(l) {}
+	NGGUpdateOperator(NGramGraph *classGraph, NGramGraph *newDoc, double l, bool p = false) :
+		BinaryOperator(classGraph, newDoc), learningFactor(l), precise(p) {}
 
 
 	/*
@@ -41,6 +49,13 @@ public:
 	 * \param l The new learning factor.
 	 */
 	void setLearningFactor(float l) { learningFactor = l; }
+
+
+	/*
+	 * Sets the precise flag.
+	 * \param p The new precise flag.
+	 */
+	void setPrecise(bool p) { precise = p; }
 
 
 	/*

@@ -36,4 +36,18 @@ void NGGUpdateOperator::apply() {
 			classGraph->updateEdgeWeight(aHead, aTail, newWeight);
 		}
 	}
+
+	if (precise) {
+		for (auto const& elem : classGraph->getEdgeNameToWeightMap()) {
+			label = elem.first;
+			classWeight = elem.second;
+			if (newDoc->getEdgeWeightByName(label) == 0) { // The edge is not present on the document graph
+				newWeight = classWeight * (1 - learningFactor);
+				std::tie(head, tail) = extractHeadAndTailFromEdgeLabel(label);
+				aHead.setData(head);
+				aTail.setData(tail);
+				classGraph->updateEdgeWeight(aHead, aTail, newWeight);
+			}
+		}
+	}
 }
