@@ -53,6 +53,12 @@ protected:
 	 */
 	void getNewEdges(DocumentClassComponent *c);
 
+	/*
+	 * Fills the graph-related data structures inherited from the ProximityGraph class, using the results
+	 * of the constructWithOpenCL() function.
+	 */
+	void buildGraph();
+
 
 public:
 	/*

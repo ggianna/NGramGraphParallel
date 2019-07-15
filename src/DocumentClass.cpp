@@ -49,6 +49,21 @@ void DocumentClass::getNewEdges(DocumentClassComponent *c) {
 	}
 }
 
+void DocumentClass::buildGraph() {
+	std::string source, target;
+	Atom<std::string> aSource, aTarget;
+
+	for (std::size_t i=0; i<hash_table_size; i++) {
+		if (edge_labels[i].length() > 0) {
+			std::tie(source, target) = updateOp.extractHeadAndTailFromEdgeLabel(edge_labels[i]);
+			aSource.setData(source);
+			aTarget.setData(target);
+			addEdge(aSource, aTarget, hash_table[i]);
+		}
+	}
+}
+
+
 
 /*
 void DocumentClass::updateWithOpenCL(DocumentClassComponent *component, Context *context, CommandQueue *queue, Program *program) {
@@ -123,4 +138,6 @@ void DocumentClass::constructWithOpenCL(std::string componentsDir, Context *cont
 	}
 
 	delete component;
+
+	buildGraph();
 }

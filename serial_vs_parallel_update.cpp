@@ -2,10 +2,11 @@
 #include <string>
 #include <vector>
 #include <tuple>
-#include <boost/lexical_cast.hpp>
 #include <CL/cl.hpp>
 
 #include "NGramGraph.hpp"
+#include "GraphComparator.hpp"
+#include "GraphSimilarity.hpp"
 #include "ProximityApproach.hpp"
 #include "DocumentClass.hpp"
 #include "FileUtils.hpp"
@@ -54,7 +55,7 @@ double compute_elapsed_time(struct timespec *finish, struct timespec *start) {
 }
 
 
-void construct_class_graph_serial(std::string dir) {
+DocumentClass * construct_class_graph_serial(std::string dir, bool precise = false) {
 	// TODO Don't delete but reset the sample_ngg object
 	StringSplitter splitter;
 	StringPayload payload;
@@ -77,22 +78,24 @@ void construct_class_graph_serial(std::string dir) {
 		sample_ngg->createGraph();
 
 		// Update the current DocumentClass object with the above NGramGraph object
-		class_graph->update(sample_ngg, true);
+		class_graph->update(sample_ngg, precise);
 
 		delete sample_ngg;
 	}
 
-	delete class_graph;
 	delete approach;
+
+	return class_graph;
 }
 
-void construct_class_graph_parallel(std::string dir, Context *context, CommandQueue *queue, Program *program) {
+DocumentClass * construct_class_graph_parallel(std::string dir, Context *context, CommandQueue *queue, Program *program) {
 	DocumentClass *class_graph = new DocumentClass(OPENCL_HASH_TABLE_SIZE);
 	if (dir.back() != '/') {
 		dir += "/";
 	}
 	class_graph->constructWithOpenCL(dir, context, queue, program);
-	delete class_graph;
+
+	return class_graph;
 }
 
 
@@ -129,7 +132,12 @@ int main(int argc, char **argv) {
 
 
 	struct timespec start, finish;
-	std::vector<std::pair<double, double>> elapsed;
+	std::vector<std::tuple<double, double, double>> elapsed;
+	std::vector<std::pair<double, double>> similarities;
+	std::tuple<DocumentClass *, DocumentClass *, DocumentClass *> class_graphs;
+	GraphComparator<std::string, std::string> gComp;
+	GraphSimilarity gSim;
+	map<std::string, double> simComps;
 	std::string topics_dir(argv[1]);
 	unsigned int cnt = 0;
 	std::string tmp;
@@ -137,31 +145,52 @@ int main(int argc, char **argv) {
 
 	FileUtils::read_directory(topics_dir, topics);
 	elapsed.resize(topics.size());
+	similarities.resize(topics.size());
 	if (topics_dir.back() != '/') {
 		topics_dir += "/";
 	}
 
 	for (auto& topic : topics) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
-		construct_class_graph_serial(topics_dir + topic);
+		std::get<0>(class_graphs) = construct_class_graph_serial(topics_dir + topic, true);
 		clock_gettime(CLOCK_MONOTONIC, &finish);
-		elapsed[cnt].first = compute_elapsed_time(&finish, &start);
+		std::get<0>(elapsed[cnt]) = compute_elapsed_time(&finish, &start);
 
 		clock_gettime(CLOCK_MONOTONIC, &start);
-		construct_class_graph_parallel(topics_dir + topic, &context, &queue, &program);
+		std::get<1>(class_graphs) = construct_class_graph_serial(topics_dir + topic);
 		clock_gettime(CLOCK_MONOTONIC, &finish);
-		elapsed[cnt].second = compute_elapsed_time(&finish, &start);
+		std::get<1>(elapsed[cnt]) = compute_elapsed_time(&finish, &start);
+
+		clock_gettime(CLOCK_MONOTONIC, &start);
+		std::get<2>(class_graphs) = construct_class_graph_parallel(topics_dir + topic, &context, &queue, &program);
+		clock_gettime(CLOCK_MONOTONIC, &finish);
+		std::get<2>(elapsed[cnt]) = compute_elapsed_time(&finish, &start);
+
+		gSim = gComp.compare(*(std::get<0>(class_graphs)), *(std::get<1>(class_graphs)));
+		simComps = gSim.getSimilarityComponents();
+		similarities[cnt].first = simComps["valueSimilarity"];
+
+		gSim = gComp.compare(*(std::get<0>(class_graphs)), *(std::get<2>(class_graphs)));
+		simComps = gSim.getSimilarityComponents();
+		similarities[cnt].second = simComps["valueSimilarity"];
+
+		delete std::get<0>(class_graphs);
+		delete std::get<1>(class_graphs);
+		delete std::get<2>(class_graphs);
 
 		++cnt;
 
 	}
 
-	std::cout << std::endl << "Topic\t\tSerial Time\t\tParallel Time" << std::endl;
+	std::cout << std::endl << "Topic\t\t\tSerial Precise\t\tSerial Non-Precise\tOpenCL\t\t\t"
+		<< "VS(Non-Precise)\t\tVS(OpenCL)\t\t" << std::endl;
 	std::cout << std::setprecision(6) << std::fixed;
 	for (unsigned int i=0; i<cnt; i++) {
 		//tmp = boost::lexical_cast<std::string>(elapsed[i].first);
-		std::cout << topics[i] << ((topics[i].length() < 8) ? "\t\t" : "\t")
-			<< elapsed[i].first << "\t\t" << elapsed[i].second << std::endl;
+		std::cout << topics[i] << ((topics[i].length() < 8) ? "\t\t\t" : "\t\t")
+			<< std::get<0>(elapsed[i]) << "\t\t" << std::get<1>(elapsed[i]) << "\t\t"
+		       	<< std::get<2>(elapsed[i]) << "\t\t" << similarities[i].first << "\t\t"
+			<< similarities[i].second << std::endl;
 	}
 
 }
