@@ -101,7 +101,9 @@ DocumentClass * construct_class_graph_parallel(std::string dir, Context *context
 
 int main(int argc, char **argv) {
 	if (argc != 2) {
-		std::cout << "Usage: " << argv[0] << " <topics_dir>\n";
+		std::cout << "Usage: " << argv[0] << " <topics_dir>\n"
+			<< "\t<topics_dir> should be a directory containing subdirectories that contain text files.\n"
+			<< "\tEach subdirectory should represent a topic.\n";
 		exit(1);
 	}
 
