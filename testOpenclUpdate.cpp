@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "DocumentClass.hpp"
+#include "OclUpdatableClass.hpp"
 #include "DocumentClassComponent.hpp"
 #include "FileUtils.hpp"
 
@@ -90,15 +90,15 @@ int main(int argc, char **argv) {
 	/* Class graph construction */
 	std::cout << std::endl;
 	unsigned int cnt = 0;
-	std::vector<DocumentClass *> class_graphs;
+	std::vector<OclUpdatableClass *> class_graphs;
 	std::vector<std::string> topics;
 	FileUtils::read_directory(topics_dir, topics);
 	class_graphs.resize(topics.size());
 	for (auto& topic : topics) {
 		std::cout << "Creating class graph for topic '" << topic << "'...";
 		std::cout.flush();
-		class_graphs[cnt] = new DocumentClass(HASH_TABLE_SIZE);
-		class_graphs[cnt]->constructWithOpenCL(topics_dir + topic + "/", &context, &queue, &program);
+		class_graphs[cnt] = new OclUpdatableClass(HASH_TABLE_SIZE);
+		class_graphs[cnt]->buildClass(topics_dir + topic + "/", &context, &queue, &program);
 		std::cout << "\t[OK]\n";
 		++cnt;
 	}

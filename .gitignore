@@ -49,3 +49,7 @@ fast_dir
 calculate_speedups.cpp
 calculate_speedups
 times.txt
+ht_size_vs_exec_time
+sizes.txt
+size_vs_time.txt
+save_class_graphs_to_file

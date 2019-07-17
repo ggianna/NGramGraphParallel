@@ -5,7 +5,7 @@
 #include "DocumentClassComponent.hpp"
 
 // Forward declaration is needed, because DocumentClass and OpenclUpdateComputation refer to each other.
-class DocumentClass;
+class OclUpdatableClass;
 
 /*
  * An OpenclComputation-derived class. It defines the execution enviroment for the OpenCL kernel
@@ -14,7 +14,7 @@ class DocumentClass;
 class OpenclUpdateComputation : public OpenclComputation<void> {
 private:
 	/* The DocumentClass object that is updated by the computation */
-	DocumentClass *docClass;
+	OclUpdatableClass *docClass;
 
 	/* The DocumentClassComponent object that 'joins' the class */
 	DocumentClassComponent *component;
@@ -44,7 +44,7 @@ public:
 	OpenclUpdateComputation();
 
 	/* Constructor */
-	OpenclUpdateComputation(Context *c, CommandQueue *q, Program *p, DocumentClass *dc, DocumentClassComponent *dcc);
+	OpenclUpdateComputation(Context *c, CommandQueue *q, Program *p, OclUpdatableClass *dc, DocumentClassComponent *dcc);
 
 	void setOpenclFields(Context *c, CommandQueue *q, Program *p) {
 		context = c;

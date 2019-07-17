@@ -72,6 +72,7 @@ bool NGramGraph::operator==(const NGramGraph& other)
 			break;
 		}
 		else if (got->second != elem.second) { //Edge name found but with different weight.
+			// TODO Check float inequality in a better way
 			ret = false;
 			break;
 		}

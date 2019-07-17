@@ -1,8 +1,8 @@
 SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
-OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o
-OUT		= createClassGraphs testOpenclUpdate serial_vs_parallel_update profile_update_kernel
+OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o
+OUT		= createClassGraphs testOpenclUpdate profile_update_kernel ht_size_vs_exec_time save_class_graphs_to_file
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER)
 OPENCL_LIB	= -lOpenCL
@@ -10,11 +10,20 @@ OPENCL_LIB	= -lOpenCL
 all: $(OUT)
 
 
+#read_class_graph: $(OBJECTS) $(SOURCES_FOLDER)/read_class_graph.o
+#	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/read_class_graph.o $(OPENCL_LIB)
+
+save_class_graphs_to_file: $(OBJECTS) $(SOURCES_FOLDER)/save_class_graphs_to_file.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/save_class_graphs_to_file.o $(OPENCL_LIB)
+
+ht_size_vs_exec_time: $(OBJECTS) $(SOURCES_FOLDER)/ht_size_vs_exec_time.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/ht_size_vs_exec_time.o $(OPENCL_LIB)
+
 profile_update_kernel: $(SOURCES_FOLDER)/profile_update_kernel.o
 	$(CC) -o $@ $(SOURCES_FOLDER)/profile_update_kernel.o $(OPENCL_LIB)
 
-serial_vs_parallel_update: $(OBJECTS) $(SOURCES_FOLDER)/serial_vs_parallel_update.o
-	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/serial_vs_parallel_update.o $(OPENCL_LIB)
+#serial_vs_parallel_update: $(OBJECTS) $(SOURCES_FOLDER)/serial_vs_parallel_update.o
+#	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/serial_vs_parallel_update.o $(OPENCL_LIB)
 
 testOpenclUpdate: $(OBJECTS) $(SOURCES_FOLDER)/testOpenclUpdate.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/testOpenclUpdate.o $(OPENCL_LIB)
@@ -25,11 +34,20 @@ createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
 #test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
 #	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o $(OPENCL_LIB)
 
+#$(SOURCES_FOLDER)/read_class_graph.o: read_class_graph.cpp
+#	$(CC) $(FLAGS) read_class_graph.cpp -o $@
+
+$(SOURCES_FOLDER)/save_class_graphs_to_file.o: save_class_graphs_to_file.cpp
+	$(CC) $(FLAGS) save_class_graphs_to_file.cpp -o $@
+
+$(SOURCES_FOLDER)/ht_size_vs_exec_time.o: ht_size_vs_exec_time.cpp
+	$(CC) $(FLAGS) ht_size_vs_exec_time.cpp -o $@
+
 $(SOURCES_FOLDER)/profile_update_kernel.o: profile_update_kernel.cpp
 	$(CC) $(FLAGS) profile_update_kernel.cpp -o $@
 
-$(SOURCES_FOLDER)/serial_vs_parallel_update.o: serial_vs_parallel_update.cpp
-	$(CC) $(FLAGS) serial_vs_parallel_update.cpp -o $@
+#$(SOURCES_FOLDER)/serial_vs_parallel_update.o: serial_vs_parallel_update.cpp
+#	$(CC) $(FLAGS) serial_vs_parallel_update.cpp -o $@
 
 $(SOURCES_FOLDER)/testOpenclUpdate.o: testOpenclUpdate.cpp $(HEADERS_FOLDER)/DocumentClassComponent.hpp $(HEADERS_FOLDER)/FileUtils.hpp
 	$(CC) $(FLAGS) testOpenclUpdate.cpp -o $@
@@ -72,6 +90,9 @@ $(SOURCES_FOLDER)/OpenclUpdateComputation.o: $(SOURCES_FOLDER)/OpenclUpdateCompu
 
 $(SOURCES_FOLDER)/FileUtils.o: $(SOURCES_FOLDER)/FileUtils.cpp $(HEADERS_FOLDER)/FileUtils.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/FileUtils.cpp -o $@
+
+$(SOURCES_FOLDER)/OclUpdatableClass.o: $(SOURCES_FOLDER)/OclUpdatableClass.cpp $(HEADERS_FOLDER)/OclUpdatableClass.hpp
+	$(CC) $(FLAGS) $(SOURCES_FOLDER)/OclUpdatableClass.cpp -o $@
 
 
 clean:

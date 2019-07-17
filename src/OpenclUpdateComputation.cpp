@@ -1,8 +1,9 @@
-#include "DocumentClass.hpp"
+#include "OclUpdatableClass.hpp"
 #include "OpenclUpdateComputation.hpp"
 
+
 OpenclUpdateComputation::OpenclUpdateComputation(Context *c, CommandQueue *q, Program *p,
-		DocumentClass *dc, DocumentClassComponent *dcc) :
+		OclUpdatableClass *dc, DocumentClassComponent *dcc) :
 	OpenclComputation(c, q, p, 0), docClass(dc), component(dcc) {
 		kernel_name = "update_ngg";
 		table_size = docClass->getOCLTableSize();
