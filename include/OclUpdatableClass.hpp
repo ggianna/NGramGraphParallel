@@ -56,6 +56,15 @@ private:
 	void buildGraph();
 
 
+	/*
+	 * TODO Make a different class for this purpose.
+	 * Measures elapsed time between two time instances. Used to profile the buildClass() function.
+	 * \param start The beginning of the time interval
+	 * \param end The end of the time interval
+	 */
+	double count_elapsed_time(struct timespec *start, struct timespec *end);
+
+
 public:
 	/*
 	 * Constructor.
@@ -84,6 +93,13 @@ public:
 	 * \param program Pointer to the OpenCL Program object that contains the udpate kernel
 	 */
 	void buildClass(std::string componentsDir, Context *context, CommandQueue *queue, Program *program);
+
+
+	/*
+	 * Profiles the buildClass() function.
+	 * \return A map containing the execution times of the various tasks performed by the buildClass() function
+	 */
+	std::map<std::string, double> profileClassBuilding(std::string dir, Context *con, CommandQueue *queue, Program *prog);
 
 
 	/*

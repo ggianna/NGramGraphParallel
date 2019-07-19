@@ -42,6 +42,14 @@ void OclUpdatableClass::buildGraph() {
 }
 
 
+double OclUpdatableClass::compute_elapsed_time(struct timespec *start, struct timespec *finish) {
+	double result = finish->tv_sec - start->tv_sec;
+	result += (finish->tv_nsec - start->tv_nsec) / 1000000000.0;
+
+	return result;
+}
+
+
 void OclUpdatableClass::singleUpdate(DocumentClassComponent *component, Context *context, CommandQueue *queue, Program *program) {
 	/*
 	// Assert that hash table sizes of this object and component object are equal
@@ -118,4 +126,74 @@ void OclUpdatableClass::buildClass(std::string componentsDir, Context *context, 
 	delete component;
 
 	buildGraph();
+}
+
+
+std::map<std::string, double> OclUpdatableClass::profileClassBuilding(std::string componentsDir,
+					Context *context, CommandQueue *queue, Program *program) {
+	std::map<std::string, double> times;
+	struct timespec totalStart, totalEnd, start, end;
+	StringSplitter splitter;
+	StringPayload payload;
+	JenkinsHash hashFunction;
+	std::vector<std::string> componentFiles;
+	DocumentClassComponent *component = new DocumentClassComponent(hash_table_size,
+			CorrelationWindow, &splitter, &payload, &hashFunction);
+	float l;
+
+
+	times["total"] = 0.0;
+	times["componentPreparation"] = 0.0;
+	times["openclKernel"] = 0.0;
+	times["newEdgeCollection"] = 0.0;
+	times["graphBuilding"] = 0.0;
+
+	clock_gettime(CLOCK_MONOTONIC, &totalStart);
+
+	if (componentsDir.back() != '/') {
+		componentsDir += "/";
+	}
+
+	FileUtils::read_directory(componentsDir, componentFiles);
+
+	oclUpdateComp.setCurrentUpdatesNo(0);
+	oclUpdateComp.setTotalUpdatesNo(componentFiles.size());
+	oclUpdateComp.setOpenclFields(context, queue, program);
+	oclUpdateComp.setComponent(component);
+
+	for (auto& file : componentFiles) {
+		++numberOfConstituents;
+		l = computeLearningFactor();
+		oclUpdateComp.setLearningFactor(l);
+
+		clock_gettime(CLOCK_MONOTONIC, &start);
+		payload.setPayload(FileUtils::read_file_to_string(componentsDir + file));
+		component->fillTables();
+		clock_gettime(CLOCK_MONOTONIC, &finish);
+		times["componentPreparation"] += compute_elapsed_time(&start, &end);
+
+		clock_gettime(CLOCK_MONOTONIC, &start);
+		oclUpdateComp.apply();
+		clock_gettime(CLOCK_MONOTONIC, &finish);
+		times["openclKernel"] += compute_elapsed_time(&start, &end);
+
+		clock_gettime(CLOCK_MONOTONIC, &start);
+		getNewEdges(component);
+		component->reset();
+		clock_gettime(CLOCK_MONOTONIC, &finish);
+		times["newEdgeCollection"] += compute_elapsed_time(&start, &end);
+	}
+
+	delete component;
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
+	buildGraph();
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	times["graphBuilding"] += compute_elapsed_time(&start, &end);
+
+	clock_gettime(CLOCK_MONOTONIC, &totalEnd);
+	times["total"] += compute_elapsed_time(&totalStart, &totalEnd);
+
+	return times;
+
 }
