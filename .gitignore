@@ -55,3 +55,5 @@ size_vs_time.txt
 save_class_graphs_to_file
 ht_size_vs_value_similarity
 size_vs_similarity.txt
+profiling.txt
+profile_parallel_class_graph_construction

@@ -62,7 +62,7 @@ private:
 	 * \param start The beginning of the time interval
 	 * \param end The end of the time interval
 	 */
-	double count_elapsed_time(struct timespec *start, struct timespec *end);
+	double compute_elapsed_time(struct timespec *start, struct timespec *end);
 
 
 public:
@@ -97,7 +97,7 @@ public:
 
 	/*
 	 * Profiles the buildClass() function.
-	 * \return A map containing the execution times of the various tasks performed by the buildClass() function
+	 * \return A map containing the execution time of the various tasks performed by the buildClass() function
 	 */
 	std::map<std::string, double> profileClassBuilding(std::string dir, Context *con, CommandQueue *queue, Program *prog);
 

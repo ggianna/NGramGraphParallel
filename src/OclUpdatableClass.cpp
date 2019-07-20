@@ -169,18 +169,18 @@ std::map<std::string, double> OclUpdatableClass::profileClassBuilding(std::strin
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		payload.setPayload(FileUtils::read_file_to_string(componentsDir + file));
 		component->fillTables();
-		clock_gettime(CLOCK_MONOTONIC, &finish);
+		clock_gettime(CLOCK_MONOTONIC, &end);
 		times["componentPreparation"] += compute_elapsed_time(&start, &end);
 
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		oclUpdateComp.apply();
-		clock_gettime(CLOCK_MONOTONIC, &finish);
+		clock_gettime(CLOCK_MONOTONIC, &end);
 		times["openclKernel"] += compute_elapsed_time(&start, &end);
 
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		getNewEdges(component);
 		component->reset();
-		clock_gettime(CLOCK_MONOTONIC, &finish);
+		clock_gettime(CLOCK_MONOTONIC, &end);
 		times["newEdgeCollection"] += compute_elapsed_time(&start, &end);
 	}
 
@@ -188,7 +188,7 @@ std::map<std::string, double> OclUpdatableClass::profileClassBuilding(std::strin
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	buildGraph();
-	clock_gettime(CLOCK_MONOTONIC, &finish);
+	clock_gettime(CLOCK_MONOTONIC, &end);
 	times["graphBuilding"] += compute_elapsed_time(&start, &end);
 
 	clock_gettime(CLOCK_MONOTONIC, &totalEnd);

@@ -2,13 +2,16 @@ SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
 OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o
-OUT		= createClassGraphs testOpenclUpdate profile_update_kernel ht_size_vs_exec_time save_class_graphs_to_file ht_size_vs_value_similarity
+OUT		= createClassGraphs testOpenclUpdate profile_update_kernel ht_size_vs_exec_time save_class_graphs_to_file ht_size_vs_value_similarity profile_parallel_class_graph_construction
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER)
 OPENCL_LIB	= -lOpenCL
 
 all: $(OUT)
 
+
+profile_parallel_class_graph_construction: $(OBJECTS) $(SOURCES_FOLDER)/profile_parallel_class_graph_construction.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/profile_parallel_class_graph_construction.o $(OPENCL_LIB)
 
 ht_size_vs_value_similarity: $(OBJECTS) $(SOURCES_FOLDER)/ht_size_vs_value_similarity.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/ht_size_vs_value_similarity.o $(OPENCL_LIB)
@@ -33,6 +36,9 @@ createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
 
 #test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
 #	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o $(OPENCL_LIB)
+
+$(SOURCES_FOLDER)/profile_parallel_class_graph_construction.o: profile_parallel_class_graph_construction.cpp
+	$(CC) $(FLAGS) profile_parallel_class_graph_construction.cpp -o $@
 
 $(SOURCES_FOLDER)/ht_size_vs_value_similarity.o: ht_size_vs_value_similarity.cpp
 	$(CC) $(FLAGS) ht_size_vs_value_similarity.cpp -o $@
