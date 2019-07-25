@@ -57,3 +57,4 @@ ht_size_vs_value_similarity
 size_vs_similarity.txt
 profiling.txt
 profile_parallel_class_graph_construction
+ht_size_vs_speedup.txt
