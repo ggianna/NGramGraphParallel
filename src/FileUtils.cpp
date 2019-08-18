@@ -21,3 +21,8 @@ std::string FileUtils::read_file_to_string(const std::string& fileName) {
 
 	return std::string(&bytes[0], fileSize);
 }
+
+bool FileUtils::fileExists(const std::string& fileName) {
+	std::ifstream ifs(fileName.c_str());
+	return ifs.good();
+}

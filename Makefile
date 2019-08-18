@@ -1,14 +1,17 @@
 SOURCES_FOLDER		= src
 HEADERS_FOLDER		= include
 TEMPLATES_FOLDER	= include/templateImp
-OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o
-OUT		= createClassGraphs testOpenclUpdate profile_update_kernel ht_size_vs_exec_time save_class_graphs_to_file ht_size_vs_value_similarity profile_parallel_class_graph_construction updates_number_vs_time
+OBJECTS			= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o $(SOURCES_FOLDER)/InputParser.o
+OUT		= createClassGraphs testOpenclUpdate profile_update_kernel ht_size_vs_exec_time save_class_graphs_to_file ht_size_vs_value_similarity profile_parallel_class_graph_construction updates_number_vs_time demo
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER)
 OPENCL_LIB	= -lOpenCL
 
 all: $(OUT)
 
+
+demo: $(OBJECTS) $(SOURCES_FOLDER)/demo.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/demo.o $(OPENCL_LIB)
 
 updates_number_vs_time: $(OBJECTS) $(SOURCES_FOLDER)/updates_number_vs_time.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/updates_number_vs_time.o $(OPENCL_LIB)
@@ -39,6 +42,9 @@ createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createClassGraphs.o
 
 #test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
 #	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o $(OPENCL_LIB)
+
+$(SOURCES_FOLDER)/demo.o: demo.cpp
+	$(CC) $(FLAGS) demo.cpp -o $@
 
 $(SOURCES_FOLDER)/updates_number_vs_time.o: updates_number_vs_time.cpp
 	$(CC) $(FLAGS) updates_number_vs_time.cpp -o $@
@@ -105,6 +111,9 @@ $(SOURCES_FOLDER)/FileUtils.o: $(SOURCES_FOLDER)/FileUtils.cpp $(HEADERS_FOLDER)
 
 $(SOURCES_FOLDER)/OclUpdatableClass.o: $(SOURCES_FOLDER)/OclUpdatableClass.cpp $(HEADERS_FOLDER)/OclUpdatableClass.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/OclUpdatableClass.cpp -o $@
+
+$(SOURCES_FOLDER)/InputParser.o: $(SOURCES_FOLDER)/InputParser.cpp $(HEADERS_FOLDER)/InputParser.hpp
+	$(CC) $(FLAGS) $(SOURCES_FOLDER)/InputParser.cpp -o $@
 
 
 clean:

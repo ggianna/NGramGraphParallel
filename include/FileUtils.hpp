@@ -30,6 +30,14 @@ public:
 	static std::string read_file_to_string(const std::string& fileName);
 
 
+	/*
+	 * Checks if a file exists.
+	 * \param fileName The name of the file to check for existence
+	 * \return True if file exists, false otherwise
+	 */
+	static bool fileExists(const std::string& fileName);
+
+
 private:
 	FileUtils();
 };

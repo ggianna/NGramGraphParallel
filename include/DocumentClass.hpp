@@ -44,6 +44,29 @@ public:
 
 
 	/*
+	 * Fills the document class with the edges contained in the lines of the given file.
+	 * The first entry of each line is the edge's weight, the second entry is the edge's label.
+	 * \param filename The name of the file containing the edges' info (weight and label)
+	 */
+	void restoreFromFile(std::string filename);
+
+
+	/*
+	 * Caches the edges of the document class in a file, so they can be restored in a later execution,
+	 * without recomputing it.
+	 * \param dir The directory in which to save the file
+	 * \param fname The name of the file
+	 */
+	void cache(std::string dir, std::string fname);
+
+
+	/*
+	 * Builds the document class, by doing consecutive updates with it's constituents.
+	 * \param dir A directory containing the text documents that constitute the class
+	 */
+	void build(std::string dir);
+
+	/*
 	 * Updates the document class with a new document. A precise update, iterates over the edges of both the 
 	 * class graph and the document graph, while a non precise one iterates over the edges of the document graph only.
 	 * The non precise operation is faster, but not strictly correct because the edges of the class graph that are not
@@ -51,7 +74,7 @@ public:
 	 * \param newDoc Pointer to the new document of the class.
 	 * \param precise Determines whether it is going to be a precise update operation or not.
 	 */
-	void update(NGramGraph *newDoc, bool precise = false);
+	void update(NGramGraph *newDoc, bool precise = true);
 
 
 	/*
