@@ -27,8 +27,8 @@ This version includes:
 
 v0.2 This version is the result of a 2-month internship. It includes:
 * The definition and implementation of some useful classes.
-* Sugnificant speedup of constructing a document class from it's components using OpenCL.
-* Some useful measurements programs demonstrating the behavior of the implemented parallel method (class graph construction).
+* Sugnificant speedup of constructing a document class from it's text components using OpenCL.
+* Some useful measurement programs demonstrating the behavior of the implemented parallel method (class graph construction).
 * A demo, a presentation and some useful diagrams.
 
 ## License
