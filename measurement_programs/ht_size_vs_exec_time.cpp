@@ -9,7 +9,7 @@
 #include "OclUpdatableClass.hpp"
 #include "FileUtils.hpp"
 
-#define OPENCL_KERNELS_DIR "./ngg_opencl_kernels/"
+#define OPENCL_KERNELS_DIR "./opencl_kernels/"
 
 Platform getPlatform() {
     /* Returns the first platform found. */
@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
 		++size_cnt;
 	}
 
-	std::cout << "\t\t";
+	std::cout << "\n\t\t";
 	for (auto& size : sizes) {
 		std::cout << size << ((size < 10000000) ? "\t\t" : "\t");
 	}

@@ -26,7 +26,7 @@
 #define SERIAL_CLASS_GRAPHS_RELATIVE_DIR "class_graphs_serial/"
 #define PARALLEL_CLASS_GRAPHS_RELATIVE_DIR "class_graphs_parallel/"
 #define TOPICS_RELATIVE_DIR "topics"
-#define OPENCL_KERNELS_RELATIVE_DIR "ngg_opencl_kernels/"
+#define OPENCL_KERNELS_RELATIVE_DIR "opencl_kernels/"
 
 
 /* 
@@ -196,7 +196,8 @@ void display_usage_message(std::string topics_dir, std::string serial_dir, std::
 
 int main(int argc, char **argv) {
 	std::string project_dir(argv[0]);
-	project_dir = project_dir.substr(0, project_dir.find_last_of("/")+1);
+	project_dir = project_dir.substr(0, project_dir.find_last_of("/")); // Removes the program name from the filepath
+	project_dir = project_dir.substr(0, project_dir.find_last_of("/")+1); // Removes the 'demos' entry from the path
 	std::string serial_class_graphs_dir(project_dir + SERIAL_CLASS_GRAPHS_RELATIVE_DIR);
 	std::string parallel_class_graphs_dir(project_dir + PARALLEL_CLASS_GRAPHS_RELATIVE_DIR);
 	std::string topics_dir(project_dir + TOPICS_RELATIVE_DIR);

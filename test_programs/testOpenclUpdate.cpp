@@ -50,15 +50,22 @@ Device getDevice(Platform platform, cl_device_type type, int i, bool display=fal
 
 
 int main(int argc, char **argv) {
-	if (argc != 2) {
-		std::cout << "Usage: ./testOpenclUpdate <topics_dir>\n";
+	if (argc != 3) {
+		std::cout << "Usage: ./testOpenclUpdate <topics_dir> <hash_table_size>\n";
 		std::cout << "<topics_dir> should be a directory containing subdirectories that contain text files. "
-			  << "Each subdirectory should represent a different topic.\n";
+			  << "Each subdirectory should represent a different topic.\n"
+			  << "<hash_table_size> is the size of the hash table of the OpenCL update method.\n";
 		exit(1);
 	}
 	std::string topics_dir(argv[1]);
 	if (topics_dir.back() != '/') {
 		topics_dir += "/";
+	}
+	unsigned int hash_table_size;
+	std::istringstream iss(argv[2]);
+	if (!(iss >> hash_table_size)) {
+		std::cerr << "Invalid hash table size: " << argv[2] << "\n";
+		exit(1);
 	}
 	/* OpenCL initialization */
 	Platform platform = getPlatform();
@@ -97,7 +104,7 @@ int main(int argc, char **argv) {
 	for (auto& topic : topics) {
 		std::cout << "Creating class graph for topic '" << topic << "'...";
 		std::cout.flush();
-		class_graphs[cnt] = new OclUpdatableClass(HASH_TABLE_SIZE);
+		class_graphs[cnt] = new OclUpdatableClass(hash_table_size);
 		class_graphs[cnt]->buildClass(topics_dir + topic + "/", &context, &queue, &program);
 		std::cout << "\t[OK]\n";
 		++cnt;

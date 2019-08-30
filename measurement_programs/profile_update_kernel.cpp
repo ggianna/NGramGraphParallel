@@ -63,7 +63,7 @@ Device getDevice(Platform platform, cl_device_type type, int i, bool display=fal
 
 int main(int argc, char **argv) {
 	if (argc != 4) {
-		std::cout << "Usage: profiling <update_kernel_file> <table_size> <iters_no>\n";
+		std::cout << "Usage: profile_update_kernel <update_kernel_file> <table_size> <iters_no>\n";
 		exit(1);
 	}
 	int iters;

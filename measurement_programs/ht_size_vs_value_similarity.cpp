@@ -19,7 +19,7 @@
 #include "FileUtils.hpp"
 
 
-#define OPENCL_KERNELS_DIR "./ngg_opencl_kernels/"
+#define OPENCL_KERNELS_DIR "./opencl_kernels/"
 #define CLASS_GRAPH_FILES_DIR "./precise_class_graphs/"
 
 
@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
 		++topic_cnt;
 	}
 
-	std::cout << "\t\t";
+	std::cout << "\n\t\t";
 	for (auto& size : sizes) {
 		std::cout << size << ((size < 10000000) ? "\t\t" : "\t");
 	}
