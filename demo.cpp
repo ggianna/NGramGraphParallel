@@ -72,6 +72,16 @@ double compute_elapsed_time(struct timespec *start, struct timespec *finish) {
 }
 
 
+/*
+ * Returns the class graph of the serial method for a specific topic and the graph construction time if requested.
+ * If the class graph is cached and time measurement is not requested, the edges of the graph are read from a file.
+ * Otherwise, the graph is computed from scratch.
+ * \param topics_dir The directory where the available topics are stored.
+ * \param graphs_dir The directory where the cached class graphs of the serial method are stored.
+ * \param topic The topic for which the caller wants the class graph.
+ * \param count_time Controls whether to measure construction time or not.
+ * \return A pair consisting of the class graph object and the time taken to construct it.
+ */
 std::pair<DocumentClass *, double> getSerialClass(std::string topics_dir, std::string graphs_dir,
 		std::string topic, bool count_time)
 {
@@ -85,15 +95,19 @@ std::pair<DocumentClass *, double> getSerialClass(std::string topics_dir, std::s
 		topics_dir += "/";
 	}
 	bool cached = FileUtils::fileExists(graphs_dir + topic + ".cg");
+	// If the caller requested time measurement or the edges of the graph are not cached to a file, create the graph from scratch.
 	if (count_time || !cached) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		class_graph->build(topics_dir + topic + "/");
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		elapsed_time = compute_elapsed_time(&start, &finish);
+		// In case the class graph was not cached, cache it now so next executions of the program will find it ready.
 		if (!cached) {
 			class_graph->cache(graphs_dir, topic + ".cg");
 		}
 	}
+
+	// If the caller did not ask for time measurement and the class graph is cached to a file, read it from there to save time.
 	else {
 		class_graph->restoreFromFile(graphs_dir + topic + ".cg");
 	}
@@ -102,7 +116,20 @@ std::pair<DocumentClass *, double> getSerialClass(std::string topics_dir, std::s
 }
 
 
-
+/*
+ * Returns the class graph of the parallel method for a specific topic and the graph construction time if requested.
+ * If the class graph is cached and time measurement is not requested, the edges of the graph are read from a file.
+ * Otherwise, the graph is computed from scratch.
+ * \param topics_dir The directory where the available topics are stored.
+ * \param graphs_dir The directory where the cached class graphs of the parallel method are stored.
+ * \param topic The topic for which the caller wants the class graph.
+ * \param table_size The size of the hash table to be used.
+ * \param count_time Controls whether to measure construction time or not.
+ * \param c Pointer to OpenCL context.
+ * \param q Pointer to OpenCL command queue.
+ * \param p Pointer to OpenCL program.
+ * \return A pair consisting of the class graph object and the time taken to construct it.
+ */
 std::pair<OclUpdatableClass *, double> getParallelClass(std::string topics_dir, std::string graphs_dir,
 		std::string topic, unsigned int table_size, bool count_time, Context *c, CommandQueue *q, Program *p)
 {
@@ -116,15 +143,19 @@ std::pair<OclUpdatableClass *, double> getParallelClass(std::string topics_dir, 
 		topics_dir += "/";
 	}
 	bool cached = FileUtils::fileExists(graphs_dir + std::to_string(table_size) + "/" + topic + ".cg");
+	// If the caller requested time measurement or the edges of the graph are not cached to a file, create the graph from scratch.
 	if (count_time || !cached) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		class_graph->buildClass(topics_dir + topic + "/", c, q, p);
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		elapsed_time = compute_elapsed_time(&start, &finish);
+		// In case the class graph was not cached, cache it now so next executions of the program will find it ready.
 		if (!cached) {
 			class_graph->cache(graphs_dir + std::to_string(table_size) + "/", topic + ".cg");
 		}
 	}
+
+	// If the caller did not ask for time measurement and the class graph is cached to a file, read it from there to save time.
 	else {
 		class_graph->restoreFromFile(graphs_dir + std::to_string(table_size) + "/" + topic + ".cg");
 	}
@@ -133,12 +164,14 @@ std::pair<OclUpdatableClass *, double> getParallelClass(std::string topics_dir, 
 }
 
 
-
+/*
+ * Prints a program usage message.
+ */
 void display_usage_message(std::string topics_dir, std::string serial_dir, std::string parallel_dir) {
 	//std::cout << std::endl;
 	std::cout << "A simple program to test the efficacy of the in parallel constructed class graphs "
 		  << "in comparison with the ones constructed serially.\n\nThe program accepts the following options/arguments:\n"
-		  << "\t -h                            Prints this message.\n"
+		  << "\t -h                            Prints this message and exits dismissing other options.\n"
 		  << "\t -c [serial | serial-parallel] Uses only topics that have their class graphs cached to a file, so they don't\n"
 		  << "\t                               need to be computed during program execution. It can be applied for the serial\n"
 		  << "\t                               method only or for both parallel and serial methods. Default is for serial only.\n"
@@ -169,13 +202,19 @@ int main(int argc, char **argv) {
 	std::string topics_dir(project_dir + TOPICS_RELATIVE_DIR);
 	std::string kernels_dir(project_dir + OPENCL_KERNELS_RELATIVE_DIR);
 
+	// Parse command line options and print appropriate messages if something is wrong.
 	InputParser iParser(argc, argv);
+	unsigned int table_size;
+	bool help_asked = iParser.cmdOptionExists("-h");
 	const std::string& filename = iParser.getCmdOption("-f");
 	const std::string& number = iParser.getCmdOption("-s");
-	unsigned int table_size;
 	bool time_comparison = iParser.cmdOptionExists("-t");
 	bool cached_enabled = iParser.cmdOptionExists("-c");
 	const std::string& cached_option = iParser.getCmdOption("-c");
+	if (help_asked) {
+		display_usage_message(topics_dir, serial_class_graphs_dir, parallel_class_graphs_dir);
+		exit(0);
+	}
 	if (!cached_option.empty() && cached_option != "serial" && cached_option != "serial-parallel") {
 		std::cout << "Invalid argument for the -c option. The value of the -c parameter should be either 'serial' or 'serial-parallel'.\n";
 		exit(1);
@@ -225,10 +264,13 @@ int main(int argc, char **argv) {
 
 
 	std::vector<std::string> topics;
+	// Read all the available topics in the topics vector.
 	FileUtils::read_directory(topics_dir, topics);
+	// used_topics vector holds the topics that are going to be used among all the available topics.
+	// Some can be excluded if, for example, the user enabled the cached option and there is no cached class graph for all the topics.
 	std::vector<std::string> used_topics = topics;
 
-	// If the cached option is enabled, filter the topics to the ones that have a cached class graph.
+	// If the cached option is enabled, reject the topics that don't have a cached class graph.
 	if (cached_enabled) {
 		for (auto& topic : topics) {
 			if (cached_option == "serial-parallel") {
@@ -256,54 +298,15 @@ int main(int argc, char **argv) {
 	std::cout << std::endl;
 
 	std::ifstream iFile(filename);
+	// The input vector will store the information contained in the argument file.
 	std::vector<std::pair<std::string, std::string>> input(0);
 	std::string sample, topic;
-	/*
-	std::vector<std::string> accepted_topics(0), rejected_topics(0);
-	bool accepted, rejected;
-	char answer = 'y';
-	*/
 	while (iFile >> sample >> topic) {
-		if (std::find(used_topics.begin(), used_topics.end(), topic) != used_topics.end()) { // If this topic is used
+		// If the provided topic is contained in the ones we can use, add the input line to the vector.
+		if (std::find(used_topics.begin(), used_topics.end(), topic) != used_topics.end()) {
 			input.push_back(std::make_pair(sample, topic));
-			/*
-			// For topics with no cached class graphs, we give the option to skip them, because constructing them is very slow.
-			rejected = std::find(rejected_topics.begin(), rejected_topics.end(), topic) != rejected_topics.end();
-			if (rejected) { // Cached class graphs don't exist for this topic and the user has already rejected it.
-				continue;
-			}
-			accepted = std::find(accepted_topics.begin(), accepted_topics.end(), topic) != accepted_topics.end();
-			if (!(FileUtils::fileExists(serial_class_graphs_dir + topic + ".cg")) && !accepted) { //No cached class graph and not accepted
-				if (!(FileUtils::fileExists(parallel_class_graphs_dir + std::to_string(table_size) + "/" + topic + ".cg"))) {
-					std::cout << "No cached class graphs of both serial and parallel method for topic '"
-						  << topic << "'. Compute them now?(Y/n): ";
-					std::cout.flush();
-				}
-				else {
-					std::cout << "No cached class graph of serial method for topic '" << topic << "'."
-						  << " Compute one now?(Y/n): ";
-					std::cout.flush();
-				}
-				std::cin >> answer;
-			}
-			else if (!(FileUtils::fileExists(parallel_class_graphs_dir + std::to_string(table_size) + "/" + topic + ".cg")) && !accepted) {
-				std::cout << "No cached class graph of parallel method for topic '" << topic << "'."
-					  << " Compute one now?(Y/n): ";
-				std::cout.flush();
-				std::cin >> answer;
-			}
-
-			if (answer != 'n' && answer != 'N') {
-				input.push_back(std::make_pair(sample, topic));
-				accepted_topics.push_back(topic);
-			}
-			else {
-				answer = 'y';
-				std::cout << "\tYou answered no. All documents of topic '" << topic << "' will be excluded.\n";
-				rejected_topics.push_back(topic);
-			}
-			*/
 		}
+		// Else, dismiss it.
 		else {
 			std::cout << "Topic '" << topic << "' is not available. Document '" << sample << "' will be excluded." << std::endl;
 		}
@@ -314,13 +317,15 @@ int main(int argc, char **argv) {
 		exit(0);
 	}
 
+	// This vector will hold the NGramGraph objects of the given text documents.
 	std::vector<NGramGraph *> sample_graphs(0);
+
 	NGramGraph *sample_ngg;
 	StringSplitter splitter;
 	StringPayload *payload;
 	ProximityApproach *approach = new SymmetricApproach();
 
-
+	// For every text document, create it's corresponding NGramGraph object and add it to the vector.
 	for (auto& line : input) {
 		sample = line.first;
 		// TODO Check if sample exists
@@ -340,12 +345,17 @@ int main(int argc, char **argv) {
 	DocumentClass *docClass_serial;
 	OclUpdatableClass *docClass_parallel;
 
+	// Outputs in case the user requested a time comparison.
 	if (time_comparison) {
 		std::cout << std::endl << "Topic\t\t\tSerial Time(secs)\tParallel Time(secs)\tSpeedup\t\tValue Similarity\t" << std::endl;
 	}
 	int sample_cnt;
 	double tempVS, serial_elapsed_time, parallel_elapsed_time;
+
+	// For every available topic, get it's class graph and compute it's value similarity with every NGramGraph object from
+	// the sample_graphs vector.
 	for (auto& topic : used_topics) {
+		// Outputs if a time comparison was requested.
 		if (time_comparison) {
 			std::cout << topic;
 			if (topic.length() < 8) std::cout << "\t\t\t";
@@ -354,37 +364,49 @@ int main(int argc, char **argv) {
 			//else hope topic.length() < 24
 			std::cout.flush();
 		}
+
 		// TODO Check if file for class graph exists. If not, create it.
-		//docClass_serial = read_class_graph_from_file(serial_class_graphs_dir + topic + ".cg");
+
+		// Get the class graph of the serial method for the current topic.
 		std::tie(docClass_serial, serial_elapsed_time) = getSerialClass(topics_dir, serial_class_graphs_dir, topic, time_comparison);
+		// If asked for, report time for the construction of the class graph.
 		if (time_comparison) {
 			std::cout << std::setprecision(1) << std::fixed << serial_elapsed_time << "\t\t\t";
 			std::cout.flush();
 		}
+
+		// Get the class graph of the parallel method for the current topic.
 		std::tie(docClass_parallel, parallel_elapsed_time) = getParallelClass(topics_dir, parallel_class_graphs_dir,
 				topic, table_size, time_comparison, &context, &queue, &program);
+		// If stats are requested, report time for the parralel construction of the class graph, speedup of the
+		// parallel method and value similarity between serial and parallel class graphs of the same topic.
 		if (time_comparison) {
 			std::cout << std::setprecision(1) << std::fixed << parallel_elapsed_time << "\t\t\t";
+
+			// That is the speedup.
 			std::cout << std::setprecision(2) << std::fixed << serial_elapsed_time / parallel_elapsed_time << "\t\t";
 			std::cout.flush();
+
+			// Compute and output value similarity here.
 			gSim = gComp.compare(*docClass_serial, *docClass_parallel);
 			tempVS = (gSim.getSimilarityComponents())["valueSimilarity"];
 			std::cout << std::setprecision(2) << std::fixed << tempVS << "\t\t\t" << std::endl;
 		}
 
-		//docClass_serial = new DocumentClass(serial_class_graphs_dir + topic + ".cg");
-		//docClass_parallel = new OclUpdatableClass(table_size);
-		//docClass_parallel->buildClass(topics_dir + topic + "/", &context, &queue, &program);
-
+		// The serial and parallel class graphs of the current topic have been constructed.
+		// Now compute the value similariy of both with every sample graph and hold the maximum.
 		sample_cnt = 0;
 		for (auto sample_graph : sample_graphs) {
+			// Compare current sample graph with the class graph of the serial method.
 			gSim = gComp.compare(*docClass_serial, *sample_graph);
 			tempVS = (gSim.getSimilarityComponents())["valueSimilarity"];
+			// If it's bigger than current maximum, replace it and change appropriately the stored extracted topic.
 			if (tempVS > valueSimilarities[sample_cnt].first) {
 				valueSimilarities[sample_cnt].first = tempVS;
 				extractedTopics[sample_cnt].first = topic;
 			}
 
+			// Repeat the same procedure as above, but with the class graph of the parallel method.
 			gSim = gComp.compare(*docClass_parallel, *sample_graph);
 			tempVS = (gSim.getSimilarityComponents())["valueSimilarity"];
 			if (tempVS > valueSimilarities[sample_cnt].second) {
@@ -395,16 +417,21 @@ int main(int argc, char **argv) {
 			++sample_cnt;
 		}
 
+		// We are done with the class graphs of the current topic, so destroy them to free some memory.
 		delete docClass_serial;
 		delete docClass_parallel;
 	}
 
+	// NGramGraph objects representing the text documents are of no use anymore, so delete them.
 	for (auto sample_graph : sample_graphs) {
 		delete sample_graph;
 	}
 	sample_graphs.clear();
 
 	if (time_comparison) std::cout << std::endl;
+
+	// Report the topic extraction for both serial and parallel method, so that the user can evaluate how they agree
+	// with each other and with the given topic also.
 	std::cout << std::endl << "Document\t\tSerial Extraction\tOpenCL Extraction\tGiven Topic" << std::endl;
 	sample_cnt = 0;
 	std::string s_topic, p_topic;
@@ -428,20 +455,6 @@ int main(int argc, char **argv) {
 		else std::cout << "\t"; // In this we hope p_topic.length() < 24.
 
 		std::cout << line.second << std::endl;
-
-		/*
-		if (line.second == s_topic) std::cout "Correct\t\t\t";
-		else std::cout "Wrong";
-
-		if (line.second == p_topic) std::cout "Correct\t\t\t";
-		else std::cout "Wrong";
-
-		if (line.second == extractedTopics[sample_cnt].first) std::cout << "CORRECT\t\t\t";
-		else std::cout << "WRONG\t\t\t";
-
-		if (line.second == extractedTopics[sample_cnt].second) std::cout << "CORRECT\t\t\t";
-		else std::cout << "WRONG\t\t\t";
-		*/
 
 		++sample_cnt;
 	}
