@@ -1,6 +1,6 @@
 # NGramGraphParallel
 A generic implementation of n-gram graphs, designed to be able to handle not only texts (or text strings in general) but any custom data format, without changes to the main structure of the code.\
-Also, in the future, support for OpenCL will be added to speed up workload-heavy graph operations with parallelization.
+Also, support for OpenCL is added to speed up workload-heavy graph operations with parallelization.
 
 ## Features
 * **Flexibility**: The basic n-gram graph representation (see [George Giannakopoulos](http://users.iit.demokritos.gr/~ggianna/)' [thesis, Chapter 3](http://users.iit.demokritos.gr/~ggianna/thesis.pdf) for additional information) is expanded and defined generic, which results in data-agnostic and reusable code. In detail, the "text" and "n-gram" are replaced by "payload" and "atom"; In other words, an entity and the smallest pieces this entity can be split into. This enables custom represantation of other data types (e.g. DNA), which leads to clearer representation and maybe better performance than the equivalent string one.
@@ -23,11 +23,11 @@ This version includes:
 * The generic n-gram graphs representation. 
 * Implementation for both generic and specialized (only for text) graphs.
 * Basic graph operations and functionality.
-* Support for [DOT](http://www.graphviz.org/doc/info/lang.html) language representation of n-Gram graphs.
+* Support for [DOT](http://www.graphviz.org/doc/info/lang.html) language representation of n-Gram graphs.<br/><br/>
 
 v0.2 This version is the result of a 2-month internship. It includes:
 * The definition and implementation of some useful classes.
-* Sugnificant speedup of constructing a document class from it's text components using OpenCL.
+* Significant speedup of constructing a document class from it's text components using OpenCL.
 * Some useful measurement programs demonstrating the behavior of the implemented parallel method (class graph construction).
 * A demo, a presentation and some useful diagrams.
 
