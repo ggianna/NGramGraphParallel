@@ -20,7 +20,7 @@
 
 
 #define OPENCL_KERNELS_DIR "./opencl_kernels/"
-#define CLASS_GRAPH_FILES_DIR "./precise_class_graphs/"
+#define SERIAL_CLASS_GRAPHS_RELATIVE_DIR "class_graphs_serial/"
 
 
 Platform getPlatform() {
@@ -67,27 +67,19 @@ OclUpdatableClass * construct_class_graph_parallel(std::string dir, Context *con
 }
 
 
-DocumentClass * read_class_graph_from_file(std::string fname) {
-	DocumentClass *ret = new DocumentClass();
-	NGGUpdateOperator updateOp(nullptr, nullptr, 0.0);
-	ifstream in(fname);
-	double weight;
-	char c;
-	std::string label, source, target;
-	Atom<std::string> aSource, aTarget;
-
-	while (in >> weight >> std::noskipws >> c) {
-		std::getline(in, label);
-		std::replace(label.begin(), label.end(), '\x1B', '\n');
-		std::tie(source, target) = updateOp.extractHeadAndTailFromEdgeLabel(label);
-		aSource.setData(source);
-		aTarget.setData(target);
-		ret->addEdge(aSource, aTarget, weight);
+bool prompt_for_char(std::string prompt, char& readch) {
+	std::string tmp;
+	std::cout << prompt << std::endl;
+	if (std::getline(std::cin, tmp)) {
+		if (tmp.length() == 1) {
+			readch = tmp[0];
+		}
+		else {
+			readch = '\0';
+		}
+		return true;
 	}
-
-	in.close();
-
-	return ret;
+	return false;
 }
 
 
@@ -99,6 +91,11 @@ int main(int argc, char **argv) {
 			<< "\t<table_sizes_file> should be a file, containing the table sizes to be tried, one at a line.\n";
 		exit(1);
 	}
+
+	std::string project_dir(argv[0]);
+	project_dir = project_dir.substr(0, project_dir.find_last_of("/")); // Removes the program name from the filepath
+	project_dir = project_dir.substr(0, project_dir.find_last_of("/")+1); // Removes the 'measurement_programs' entry from the path
+	std::string serial_class_graphs_dir(project_dir + SERIAL_CLASS_GRAPHS_RELATIVE_DIR);
 
 	std::string topics_dir(argv[1]);
 	if (topics_dir.back() != '/') {
@@ -137,7 +134,6 @@ int main(int argc, char **argv) {
 		cout << "OpenCL program was built successfully.\n";
 	}
 
-	//struct timespec start, finish;
 	OclUpdatableClass *ocl_class_graph;
 	DocumentClass *correct_class_graph;
 	std::vector<std::string> topics;
@@ -152,13 +148,38 @@ int main(int argc, char **argv) {
 		s.resize(sizes.size());
 	}
 
+	char answer;
+	bool skip = false;
+	std::vector<std::string> skipped_topics;
 	for (auto& topic : topics) {
 		size_cnt = 0;
-		correct_class_graph = read_class_graph_from_file(CLASS_GRAPH_FILES_DIR + topic + ".cg");
+		if (!FileUtils::fileExists(serial_class_graphs_dir + topic + ".cg")) {
+			while (prompt_for_char("No cached class graph for topic '" + topic + "'. Compute one now? [y/n]", answer)) {
+				if (answer == 'y' || answer == 'Y') {
+					correct_class_graph = new DocumentClass();
+					correct_class_graph->build(topics_dir + topic + "/");
+					correct_class_graph->cache(serial_class_graphs_dir, topic + ".cg");
+					break;
+				}
+				else if (answer == 'n' || answer == 'N') {
+					std::cout << "Topic '" + topic + "' will be skipped.\n";
+					skip = true;
+					break;
+				}
+			}
+		}				
+		else {
+			correct_class_graph = new DocumentClass();
+			correct_class_graph->restoreFromFile(serial_class_graphs_dir + topic + ".cg");
+		}
+		if (skip) {
+			skip = false;
+			skipped_topics.push_back(topic);
+			++topic_cnt;
+			continue;
+		}
 		for (auto& size : sizes) {
-			//clock_gettime(CLOCK_MONOTONIC, &start);
 			ocl_class_graph = construct_class_graph_parallel(topics_dir + topic, &context, &queue, &program, size);
-			//clock_gettime(CLOCK_MONOTONIC, &finish);
 			gSim = gComp.compare(*ocl_class_graph, *correct_class_graph);
 			simComps = gSim.getSimilarityComponents();
 			similarities[topic_cnt][size_cnt] = simComps["valueSimilarity"];
@@ -170,20 +191,28 @@ int main(int argc, char **argv) {
 		++topic_cnt;
 	}
 
-	std::cout << "\n\t\t";
-	for (auto& size : sizes) {
-		std::cout << size << ((size < 10000000) ? "\t\t" : "\t");
+	if (topics.size() > skipped_topics.size()) {
+		std::cout << "\n\t\t";
+		for (auto& size : sizes) {
+			std::cout << size << ((size < 10000000) ? "\t\t" : "\t");
+		}
+		std::cout << std::endl;
 	}
-	std::cout << std::endl;
+	else {
+		std::cout << "\nAll available topics are skipped. Nothing to do. Exiting.\n";
+		exit(0);
+	}
 
 	topic_cnt = 0;
 	std::cout << std::setprecision(5) << std::fixed;
 	for (auto& row : similarities) {
-		std::cout << topics[topic_cnt] << ((topics[topic_cnt].length() < 8) ? "\t\t" : "\t");
-		for (auto& similarity : row) {
-			std::cout << similarity << "\t\t";
+		if (std::find(skipped_topics.begin(), skipped_topics.end(), topics[topic_cnt]) == skipped_topics.end()) {
+			std::cout << topics[topic_cnt] << ((topics[topic_cnt].length() < 8) ? "\t\t" : "\t");
+			for (auto& similarity : row) {
+				std::cout << similarity << "\t\t";
+			}
+			std::cout << std::endl;
 		}
-		std::cout << std::endl;
 		++topic_cnt;
 	}
 

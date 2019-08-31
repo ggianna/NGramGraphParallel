@@ -28,8 +28,8 @@ This version includes:
 v0.2 This version is the result of a 2-month internship. It includes:
 * The definition and implementation of some useful classes.
 * Significant speedup of constructing a document class from it's text components using OpenCL.
-* Some useful measurement programs demonstrating the behavior of the implemented parallel method (class graph construction).
-* A demo, a presentation and some useful diagrams.
+* Some useful measurement programs and diagrams demonstrating the behavior of the implemented parallel method (class graph construction).
+* A summarizing presentation and a demo.
 
 ## License
 NGramGraphParallel is licenced under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

@@ -38,7 +38,6 @@ public:
 	/*
 	 * Constructor.
 	 * Payload, Splitter and ProximityEvaluator member fields are all set to NULL and never used.
-	 * OpenCL-related fields are left uninitialized.
 	 */
 	DocumentClass();
 
