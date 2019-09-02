@@ -1,4 +1,0 @@
-/home/bill/NGramGraphParallel/topics/motorcycles/101725 motorcycles
-/home/bill/NGramGraphParallel/topics/motorcycles/103168 motorcycles
-/home/bill/NGramGraphParallel/topics/motorcycles/104576 motorcycles
-/home/bill/NGramGraphParallel/topics/motorcycles/105227 motorcycles

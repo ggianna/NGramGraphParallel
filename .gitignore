@@ -60,3 +60,5 @@ ht_size_vs_speedup.txt
 updates_number_vs_time
 demo
 ignored_stuff
+demo_input.txt
+generate_demo_input

@@ -16,7 +16,7 @@ OPENCL_LIB	= -lOpenCL
 all: $(OUT)
 
 
-$(DEMOS_FOLDER)/demo: $(OBJECTS) $(SOURCES_FOLDER)/demo.o
+$(DEMOS_FOLDER)/demo: $(OBJECTS) $(SOURCES_FOLDER)/demo.o $(DEMOS_FOLDER)/demo_input.txt
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/demo.o $(OPENCL_LIB)
 
 $(MEASUREMENT_PROGRAMS_FOLDER)/updates_number_vs_time: $(OBJECTS) $(SOURCES_FOLDER)/updates_number_vs_time.o
@@ -114,9 +114,22 @@ $(SOURCES_FOLDER)/InputParser.o: $(SOURCES_FOLDER)/InputParser.cpp $(HEADERS_FOL
 
 clean:
 	rm -f $(OBJECTS) $(OUT)
+	rm -f $(DEMOS_FOLDER)/demo_input.txt
+	rm -f $(DEMOS_FOLDER)/generate_demo_input
 
 no_exe_clean:
 	rm -f $(OBJECTS)
 
 count:
 	wc -l $(SOURCES_FOLDER)/*.cpp $(HEADERS_FOLDER)/*.hpp $(TEMPLATES_FOLDER)/*.tcc
+
+
+#
+# Automagically generated demo input
+#
+$(DEMOS_FOLDER)/demo_input.txt: $(DEMOS_FOLDER)/generate_demo_input
+	$(DEMOS_FOLDER)/generate_demo_input > $(DEMOS_FOLDER)/demo_input.txt
+
+$(DEMOS_FOLDER)/generate_demo_input: $(DEMOS_FOLDER)/generate_demo_input.cpp
+	$(CC) -Wall $(DEMOS_FOLDER)/generate_demo_input.cpp -o $@
+
