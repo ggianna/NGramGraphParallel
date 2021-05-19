@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 #ifdef __APPLE__
-    #include <OpenCL/cl.hpp>
+    #include <OpenCL/opencl.hpp>
 #else
-    #include <CL/cl.hpp>
+    #include <CL/opencl.hpp>
 #endif
 
 #include "DocumentClass.hpp"

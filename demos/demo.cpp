@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <tuple>
 #ifdef __APPLE_
-   #include <OpenCL/cl.hpp>
+   #include <OpenCL/opencl.hpp>
 #else
-   #include <CL/cl.hpp>
+   #include <CL/opencl.hpp>
 #endif
 
 #include "InputParser.hpp"

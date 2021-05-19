@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <CL/cl.hpp>
+#include <CL/opencl.hpp>
 
 #include <dirent.h>
 #include <sys/types.h>

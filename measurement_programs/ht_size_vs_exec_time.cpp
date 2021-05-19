@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
-#include <CL/cl.hpp>
+#include <CL/opencl.hpp>
 
 #include "ProximityApproach.hpp"
 #include "OclUpdatableClass.hpp"
