@@ -76,7 +76,7 @@ class Splitter
          * Splits the payload to Atoms, and returns the result in a vector.
          * \return A vector with the Atoms to which the payload was split.
          */
-        virtual vector<Atom<AtomType>> splitPayloadToAtoms(Payload<PayloadType> *payloadToSplit) = 0;
+        virtual std::vector<Atom<AtomType>> splitPayloadToAtoms(Payload<PayloadType> *payloadToSplit) = 0;
 
 
 

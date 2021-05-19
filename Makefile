@@ -5,7 +5,7 @@ TEST_PROGRAMS_FOLDER		= test_programs
 DEMOS_FOLDER			= demos
 MEASUREMENT_PROGRAMS_FOLDER	= measurement_programs
 # TODO: Replace
-OPENCL_HEADERS_FOLDER		= /path/to/OpenCL-SDK/include/cpp/
+OPENCL_HEADERS_FOLDER		= /home/ggianna/Documents/CApplications/OpenCL-SDK/include/cpp/
 ###############
 
 OBJECTS	= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o $(SOURCES_FOLDER)/InputParser.o
@@ -14,7 +14,7 @@ OUT = $(TEST_PROGRAMS_FOLDER)/createClassGraphs $(TEST_PROGRAMS_FOLDER)/testOpen
 
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER) -I$(OPENCL_HEADERS_FOLDER)
-OPENCL_LIB	= -lOpenCL -lboost_compute
+OPENCL_LIB	= -lOpenCL
 
 all: $(OUT)
 

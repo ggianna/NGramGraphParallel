@@ -4,11 +4,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#ifdef __APPLE__
-   #include <OpenCL/opencl.hpp>
-#else
-   #include <CL/opencl.hpp>
-#endif
+#include <openclParams.hpp>
 
 #include "DocumentClass.hpp"
 #include "OclUpdatableClass.hpp"

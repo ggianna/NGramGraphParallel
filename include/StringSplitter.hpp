@@ -52,7 +52,7 @@ class StringSplitter : public Splitter<std::string, std::string>
          * Splits the payload to Atoms, and returns the result in a vector.
          * \return A vector with the Atoms to which the payload was split.
          */
-        virtual vector<Atom<std::string>> splitPayloadToAtoms(Payload<std::string> *payloadToSplit);
+        virtual std::vector<Atom<std::string>> splitPayloadToAtoms(Payload<std::string> *payloadToSplit);
 };
 
 #endif // STRINGSPLITTER_H

@@ -1,7 +1,7 @@
 #ifndef DOCUMENT_CLASS_H
 #define DOCUMENT_CLASS_H
 
-#include <CL/opencl.hpp>
+#include <openclParams.hpp>
 
 #include "FileUtils.hpp"
 #include "NGramGraph.hpp"

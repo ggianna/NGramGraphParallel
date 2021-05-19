@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <CL/opencl.hpp>
+#include <openclParams.hpp>
 #include <sys/types.h>
 #include <dirent.h>
 

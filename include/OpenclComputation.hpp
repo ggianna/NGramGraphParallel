@@ -2,13 +2,7 @@
 #define OPENCL_COMPUTATION
 
 #include <string>
-#ifdef __APPLE__
-    #include <OpenCL/opencl.hpp>
-#else
-    #include <CL/opencl.hpp>
-#endif // __APPLE__
-
-using namespace cl;
+#include "openclParams.hpp"
 
 
 #define EDGE_WEIGHT_TYPE float

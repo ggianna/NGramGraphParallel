@@ -31,10 +31,10 @@ private:
 	unsigned char *flags;
 
 	/* Holds the labels of the edges */
-	vector<std::string> edge_labels;
+	std::vector<std::string> edge_labels;
 
 	/* Holds the hash values of the labels */
-	vector<unsigned long> hash_values;
+	std::vector<unsigned long> hash_values;
 
 	/* Used to split the text document in n-grams */
 	StringSplitter *splitter;
@@ -97,7 +97,7 @@ private:
 	 * \param source The atom that participates in all edges
 	 * \param targets A vector containing the atoms to be connected with source
 	 */
-	void createEdgesToPrecedingAtoms(Atom<std::string> source, vector<Atom<std::string>> targets) {
+	void createEdgesToPrecedingAtoms(Atom<std::string> source, std::vector<Atom<std::string>> targets) {
 		std::string source_name = source.toString();
 		std::string label_name, target_name;
 		unsigned long hash;
@@ -139,7 +139,7 @@ public:
 	 * the symmetric proximity approach.
 	 */
 	void fillTables() {
-		vector<Atom<std::string>> atoms, preceding_atoms;
+		std::vector<Atom<std::string>> atoms, preceding_atoms;
 		atoms = splitter->splitPayloadToAtoms(payload);
 		unsigned int half_win = correlation_window / 2;
 
@@ -181,11 +181,11 @@ public:
 		return flags;
 	}
 
-	vector<std::string>& getEdgeLabels() {
+	std::vector<std::string>& getEdgeLabels() {
 		return edge_labels;
 	}
 
-	vector<unsigned long>& getHashValues() {
+	std::vector<unsigned long>& getHashValues() {
 		return hash_values;
 	}
 

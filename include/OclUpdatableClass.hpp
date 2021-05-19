@@ -3,11 +3,7 @@
 
 #include <vector>
 #include <string>
-#ifdef __APPLE__
-    #include <OpenCL/opencl.hpp>
-#else
-    #include <CL/opencl.hpp>
-#endif
+#include "openclParams.hpp"
 
 #include "DocumentClass.hpp"
 #include "DocumentClassComponent.hpp"
@@ -26,13 +22,13 @@ private:
 	/*
 	 * A vector to hold edge labels as they are added by components.
 	 */
-	vector<std::string> edge_labels;
+	std::vector<std::string> edge_labels;
 
 
 	/*
 	 * A vector to hold hash values of edge labels.
 	 */
-	vector<unsigned long> hash_values;
+	std::vector<unsigned long> hash_values;
 
 
 	/*
