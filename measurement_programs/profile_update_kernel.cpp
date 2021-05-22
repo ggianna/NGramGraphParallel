@@ -4,10 +4,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <CL/opencl.hpp>
+//#include <CL/opencl.hpp>
 
 #include <dirent.h>
 #include <sys/types.h>
+#include <openclParams.hpp> 
 
 using namespace cl;
 using namespace std;
@@ -18,7 +19,7 @@ std::string read_file_to_string(const std::string& fileName) {
 	ifstream::pos_type fileSize = ifs.tellg();
 	ifs.seekg(0, ios::beg);
 
-	vector<char> bytes(fileSize);
+	std::vector<char> bytes(fileSize);
 	ifs.read(&bytes[0], fileSize);
 
 	return std::string(&bytes[0], fileSize);
