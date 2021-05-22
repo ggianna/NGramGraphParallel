@@ -20,12 +20,9 @@
 #include "GraphSimilarity.hpp"
 #include "GraphComparator.hpp"
 #include "NGramGraph.hpp"
-#include "UniqueVertexGraph.hpp"
-#include "StringAtom.hpp"
 #include "StringSplitter.hpp"
 #include "ProximityApproach.hpp"
-#include "DocumentClass.hpp"
-#include "NGGMergeOperator.hpp"
+#include "InputParser.hpp"
 
 
 using namespace std;
@@ -36,31 +33,25 @@ int main(int argc, char* argv[]){
 	int NGRAMSIZE_VALUE=NGRAMSIZE_DEFAULT_VALUE;
 	int WINDOWSIZE=2;
 
-	for( int i = 0 ; i <= argc-1; i++ ){
-		std::string arg(argv[i]);
-		if (arg.compare("-s") == 0 or arg.compare("-S")==0){
-			TEXT_PAYLOAD = std::string(argv[i+1]);
-		}
-		else if (arg.compare("-w") == 0 or arg.compare("-W")==0){
-			WINDOWSIZE = atoi(argv[i+1]);
-		}
-		else if (arg.compare("-n") == 0 or arg.compare("-N")==0){
-			NGRAMSIZE_VALUE = atoi(argv[i+1]);
-		}
-		else{;}
-	}
-    cout << "PAYLOAD : "<<TEXT_PAYLOAD<<endl;
-    cout << "WINDOW : "<<WINDOWSIZE<<endl;
-    cout << "NGRAMS :"<<NGRAMSIZE_VALUE<<endl;
 
-    StringSplitter testStringSplitter(NGRAMSIZE_VALUE);
-    
-    StringPayload testStringPayload(TEXT_PAYLOAD);
-    
-    ProximityApproach* approach = new SymmetricApproach();
+	InputParser parser(argc,argv);
 
-    NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
-    testNGramGraph.createGraph();
-    testNGramGraph.printGraphviz();
-    testNGramGraph.printGraphvizToFile("out.dot");
+	TEXT_PAYLOAD =  parser.cmdOptionExists("-s") ? parser.getCmdOption("-s") : "";
+	WINDOWSIZE =  parser.cmdOptionExists("-w") ?  atoi(parser.getCmdOption("-w").c_str()) : NGRAMSIZE_DEFAULT_VALUE;	
+	NGRAMSIZE_VALUE =  parser.cmdOptionExists("-n") ? atoi(parser.getCmdOption("-n").c_str()) : 2;
+
+	cout << "PAYLOAD : "<<TEXT_PAYLOAD<<endl;
+	cout << "WINDOW : "<<WINDOWSIZE<<endl;
+	cout << "NGRAMS :"<<NGRAMSIZE_VALUE<<endl;
+
+	StringSplitter testStringSplitter(NGRAMSIZE_VALUE);
+
+	StringPayload testStringPayload(TEXT_PAYLOAD);
+
+	ProximityApproach* approach = new SymmetricApproach();
+
+	NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
+	testNGramGraph.createGraph();
+	testNGramGraph.printGraphviz();
+	testNGramGraph.printGraphvizToFile("out.dot");
 }
