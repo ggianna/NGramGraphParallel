@@ -80,3 +80,12 @@ bool NGramGraph::operator==(const NGramGraph& other)
 
 	return ret;
 }
+
+
+
+
+
+
+
+
+

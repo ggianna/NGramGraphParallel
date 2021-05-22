@@ -23,9 +23,13 @@ void NGGUpdateOperator::apply() {
 	EDGE_WEIGHT_TYPE docWeight, classWeight, newWeight;
 	for (auto const& elem : newDoc->getEdgeNameToWeightMap()) {
 		label = elem.first;
-		docWeight = elem.second;
+		docWeight = elem.second;  
+		//cout << "docWeight " <<docWeight<<endl;
 		classWeight = classGraph->getEdgeWeightByName(label);
+		//cout << "previous weight " <<classWeight<<endl;
 		newWeight = classWeight + (docWeight - classWeight) * learningFactor;
+		//cout << "new weight " <<newWeight<<endl;
+		//cout << "learning factor "<<learningFactor<<endl;
 		std::tie(head, tail) = extractHeadAndTailFromEdgeLabel(label);
 		aHead.setData(head);
 		aTail.setData(tail);

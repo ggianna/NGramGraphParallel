@@ -10,7 +10,7 @@ OPENCL_HEADERS_FOLDER		= /home/ngialitsis/CApplications/OpenCL-SDK/include/cpp/
 
 OBJECTS	= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o $(SOURCES_FOLDER)/InputParser.o
 
-OUT = $(TEST_PROGRAMS_FOLDER)/createClassGraphs $(TEST_PROGRAMS_FOLDER)/testOpenclUpdate $(TEST_PROGRAMS_FOLDER)/test $(MEASUREMENT_PROGRAMS_FOLDER)/profile_update_kernel $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_exec_time $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_value_similarity $(MEASUREMENT_PROGRAMS_FOLDER)/profile_parallel_class_graph_construction $(MEASUREMENT_PROGRAMS_FOLDER)/updates_number_vs_time $(DEMOS_FOLDER)/demo
+OUT = $(TEST_PROGRAMS_FOLDER)/createClassGraphs $(TEST_PROGRAMS_FOLDER)/testOpenclUpdate $(TEST_PROGRAMS_FOLDER)/test $(MEASUREMENT_PROGRAMS_FOLDER)/profile_update_kernel $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_exec_time $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_value_similarity $(MEASUREMENT_PROGRAMS_FOLDER)/profile_parallel_class_graph_construction $(MEASUREMENT_PROGRAMS_FOLDER)/updates_number_vs_time $(DEMOS_FOLDER)/demo $(TEST_PROGRAMS_FOLDER)/NGramGraphTransformSaveString
 
 CC		= g++
 FLAGS		= -c -std=c++11 -Wall -I$(HEADERS_FOLDER) -I$(OPENCL_HEADERS_FOLDER)
@@ -46,6 +46,9 @@ $(TEST_PROGRAMS_FOLDER)/createClassGraphs: $(OBJECTS) $(SOURCES_FOLDER)/createCl
 $(TEST_PROGRAMS_FOLDER)/test: $(OBJECTS) $(SOURCES_FOLDER)/test.o
 	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/test.o $(OPENCL_LIB)
 
+$(TEST_PROGRAMS_FOLDER)/NGramGraphTransformSaveString: $(OBJECTS) $(SOURCES_FOLDER)/NGramGraphTransformSaveString.o
+	$(CC) -o $@ $(OBJECTS) $(SOURCES_FOLDER)/NGramGraphTransformSaveString.o $(OPENCL_LIB)
+
 
 $(SOURCES_FOLDER)/demo.o: $(DEMOS_FOLDER)/demo.cpp
 	$(CC) $(FLAGS) $(DEMOS_FOLDER)/demo.cpp -o $@
@@ -73,6 +76,10 @@ $(SOURCES_FOLDER)/createClassGraphs.o: $(TEST_PROGRAMS_FOLDER)/createClassGraphs
 
 $(SOURCES_FOLDER)/test.o: $(TEST_PROGRAMS_FOLDER)/test.cpp
 	$(CC) $(FLAGS) $(TEST_PROGRAMS_FOLDER)/test.cpp -o $@
+
+
+$(SOURCES_FOLDER)/NGramGraphTransformSaveString.o: $(TEST_PROGRAMS_FOLDER)/NGramGraphTransformSaveString.cpp
+	$(CC) $(FLAGS) $(TEST_PROGRAMS_FOLDER)/NGramGraphTransformSaveString.cpp -o $@
 
 
 $(SOURCES_FOLDER)/GraphSimilarity.o: $(SOURCES_FOLDER)/GraphSimilarity.cpp $(HEADERS_FOLDER)/GraphSimilarity.hpp
