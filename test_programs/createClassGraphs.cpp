@@ -21,7 +21,6 @@
 
 
 
-
 int main() {
 	std::vector<std::string> topics;
 	std::vector<std::string> topic_files;
@@ -66,3 +65,4 @@ int main() {
 
 	return 0;
 }
+

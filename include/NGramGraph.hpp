@@ -28,6 +28,11 @@
 #define CORRELATIONWINDOW_DEFAULT_VALUE 4
 
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
+
 // forward declaration
 class ProximityApproach; //We need forward declaration, because NGramGraph and ProximityApproach refer to each other.
 
@@ -106,5 +111,7 @@ class NGramGraph : public ProximityGraph<std::string, std::string>
 	ProximityApproach *approach;
 	
 };
-
+#ifdef __cplusplus
+}
+#endif
 #endif // NGRAMGRAPH_H

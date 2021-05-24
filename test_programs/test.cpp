@@ -39,7 +39,7 @@ int main(){
     StringSplitter testStringSplitter(4);
 
     // Set the size of the atoms (n-grams in this  case). Default is 3.
-    testStringSplitter.setAtomSize(NGRAMSIZE_DEFAULT_VALUE);
+	//testStringSplitter.setAtomSize(NGRAMSIZE_DEFAULT_VALUE);
 
     // Declare the payload of the Proximity Graph (the entity that will be split to atoms). We are using a text in this example, so it will be a string payload.
     StringPayload testStringPayload(TEXT_PAYLOAD);
@@ -51,16 +51,23 @@ int main(){
     // The NGramGraph has a built-in basic Proximity Evaluator so we won't explicitly pass one, but it needs a String Splitter and a String Payload to split.
     NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
 
+    GraphSimilarity testGraphSimilarity;
+    NGramGraph halfgraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
+
+    cout << "created halfgraph" << endl;
 
     // Create the graph from the text (StringPayload) and print it in DOT format.
     testNGramGraph.createGraph();
+    halfgraph.createGraph();
+
     testNGramGraph.printGraphviz();
     testNGramGraph.printGraphvizToFile("out.dot");
-
+	
 
     DocumentClass docClass;
     // update docClass (which is empty) with testNGramGraph (the graph produced from TEXT_PAYLOAD)
     docClass.update(&testNGramGraph);
+    docClass.update(&halfgraph);
 
     // because docClass was initially empty, docClass and testNGramGraph should be the same now
     if (docClass == testNGramGraph) {
@@ -68,8 +75,19 @@ int main(){
     }
 
     // merge testNGramGraph with itself and get the result in a new NGramGraph object
+    
+    
     NGGMergeOperator mergeOp(&testNGramGraph, &testNGramGraph);
     NGramGraph opValue = mergeOp.apply();
+
+    GraphComparator<std::string, std::string> testGraphComparator;
+    testGraphSimilarity = testGraphComparator.compare(docClass, halfgraph);
+
+    map<string, double> testSimilarityComponents =  testGraphSimilarity.getSimilarityComponents();
+    cout << "Size Similarity: " << testSimilarityComponents["sizeSimilarity"] << endl;
+    cout << "Value Similarity: " << testSimilarityComponents["valueSimilarity"] << endl;
+    cout << "Normalized Value Similarity: " << testSimilarityComponents["normalizedValueSimilarity"] << endl;
+    cout << "Containment Value Similarity: " << testSimilarityComponents["containmentSimilarity"] << endl;
 
     // the result of the merge operation should be the same with testNGramGraph
     if (opValue == testNGramGraph)
@@ -83,16 +101,13 @@ int main(){
     // An example of graph comparison:
 
     // Declare an instance of GraphSimilarity to hold the comparison's result
-    GraphSimilarity testGraphSimilarity;
 
     // Declare the graph comparator
-    GraphComparator<std::string, std::string> testGraphComparator;
 
     // Compare the previous graph with itself and store the result to testGraphSimilarity
     testGraphSimilarity = testGraphComparator.compare(testNGramGraph, testNGramGraph);
 
     // Display all defined similarities of the two compared graphs.
-    map<string, double> testSimilarityComponents =  testGraphSimilarity.getSimilarityComponents();
     cout << "Size Similarity: " << testSimilarityComponents["sizeSimilarity"] << endl;
     cout << "Value Similarity: " << testSimilarityComponents["valueSimilarity"] << endl;
     cout << "Normalized Value Similarity: " << testSimilarityComponents["normalizedValueSimilarity"] << endl;

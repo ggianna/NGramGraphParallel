@@ -5,12 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <tuple>
-#ifdef __APPLE_
-   #include <OpenCL/opencl.hpp>
-#else
-   #include <CL/opencl.hpp>
-#endif
-
+#include <openclParams.hpp>
 #include "InputParser.hpp"
 #include "Atom.hpp"
 #include "NGramGraph.hpp"
