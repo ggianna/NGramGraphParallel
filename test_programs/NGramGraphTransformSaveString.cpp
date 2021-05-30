@@ -29,16 +29,12 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
-	std::string TEXT_PAYLOAD;
-	int NGRAMSIZE_VALUE=NGRAMSIZE_DEFAULT_VALUE;
-	int WINDOWSIZE=2;
-
 
 	InputParser parser(argc,argv);
-
-	TEXT_PAYLOAD =  parser.cmdOptionExists("-s") ? parser.getCmdOption("-s") : "";
-	WINDOWSIZE =  parser.cmdOptionExists("-w") ?  atoi(parser.getCmdOption("-w").c_str()) : NGRAMSIZE_DEFAULT_VALUE;	
-	NGRAMSIZE_VALUE =  parser.cmdOptionExists("-n") ? atoi(parser.getCmdOption("-n").c_str()) : 2;
+	
+	std::string TEXT_PAYLOAD =  parser.cmdOptionExists("-s") ? parser.getCmdOption("-s") : "";
+	int WINDOWSIZE =  parser.cmdOptionExists("-w") ?  atoi(parser.getCmdOption("-w").c_str()) : NGRAMSIZE_DEFAULT_VALUE;	
+	int NGRAMSIZE_VALUE =  parser.cmdOptionExists("-n") ? atoi(parser.getCmdOption("-n").c_str()) : 2;
 
 	cout << "PAYLOAD : "<<TEXT_PAYLOAD<<endl;
 	cout << "WINDOW : "<<WINDOWSIZE<<endl;
