@@ -1,13 +1,19 @@
-#include "C_Interface.hpp"
-#include "C_HandleGraphRequest.hpp"
+#include <cstdlib>
+#include "C_Interface.h"
+#include "C_HandleGraphRequest.h"
+
+
 #ifdef __cplusplus
 extern "C"{
 #endif
 int id=0;
-int Request(const char* msg){
+
+static Handler* handler=NULL;
+int HandleRequest(const char* msg){
 	extern int id;
 	if (msg){
-		getGraph(msg);
+		handler = new Handler();
+		handler->getGraph(msg);
 		id++;
 		return id;
 	}
