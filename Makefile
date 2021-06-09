@@ -8,6 +8,7 @@ OPENCL_HEADERS_FOLDER		= /home/ngialitsis/CApplications/OpenCL-SDK/include/cpp/
 C_WRAPPER_FOLDER		= /home/ngialitsis/search/NGramGraphParallel/c_wrapper
 ###############
 
+
 OBJECTS	= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o $(SOURCES_FOLDER)/InputParser.o $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so   $(C_WRAPPER_FOLDER)/libC_Interface.so  $(C_WRAPPER_FOLDER)/libStringSplitter.so $(C_WRAPPER_FOLDER)/libNGramGraph.so $(C_WRAPPER_FOLDER)/libProximityApproach.so
 
 OUT = $(TEST_PROGRAMS_FOLDER)/createClassGraphs $(TEST_PROGRAMS_FOLDER)/testOpenclUpdate $(TEST_PROGRAMS_FOLDER)/test $(MEASUREMENT_PROGRAMS_FOLDER)/profile_update_kernel $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_exec_time $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_value_similarity $(MEASUREMENT_PROGRAMS_FOLDER)/profile_parallel_class_graph_construction $(MEASUREMENT_PROGRAMS_FOLDER)/updates_number_vs_time $(DEMOS_FOLDER)/demo $(TEST_PROGRAMS_FOLDER)/NGramGraphTransformSaveString $(C_WRAPPER_FOLDER)/Request
