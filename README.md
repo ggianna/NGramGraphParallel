@@ -22,7 +22,7 @@ Inside the project's top directory:\
 * append c\_wrapper directory to LD\_LIBRARY\_PATH   
 	`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:full/path/to/c_wrapper`\
 	or add above line  to ~/.bashrc for permanent use
-* edit Makefile path variable `C\_WRAPPER\_FOLDER` and `OPENCL\_HEADERS\_FOLDER`
+* edit Makefile path variable `C_WRAPPER_FOLDER` and `OPENCL_HEADERS_FOLDER`
 * run "make" on main directory
 * test wrapper by running ./c\_wrapper/Request
 
