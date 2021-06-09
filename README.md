@@ -19,9 +19,10 @@ Inside the project's top directory:\
 `./demos/demo -f ./demos/demo_input.txt -c serial`
 
 # Setting-up C wrapper (Nikos Gialitsis)
-* Requirement: append c\_wrapper directory to LD\_LIBRARY\_PATH   
+* append c\_wrapper directory to LD\_LIBRARY\_PATH   
 	`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:full/path/to/c_wrapper`\
-	'or add above line  to ~/.bashrc for permanent use'\
+	or add above line  to ~/.bashrc for permanent use
+* edit Makefile path variable `C\_WRAPPER\_FOLDER` and `OPENCL\_HEADERS\_FOLDER`
 * run "make" on main directory
 * test wrapper by running ./c\_wrapper/Request
 
