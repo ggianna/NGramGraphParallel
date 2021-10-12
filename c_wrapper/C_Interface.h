@@ -4,7 +4,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int HandleRequest(const char* msg);
+double computeDissimilarity(const char* msg1, const char* msg2);
+double valueDissimilarity(const char* msg1,const char* msg2);
 #ifdef __cplusplus
 }
 #endif

@@ -1,36 +1,19 @@
 #include "C_HandleGraphRequest.h"
 #include <stdio.h>
 #include <iostream>
-#include "/home/ngialitsis/search/NGramGraphParallel/include/NGramGraph.hpp"
-#include "/home/ngialitsis/search/NGramGraphParallel/include/StringSplitter.hpp"
-#include "/home/ngialitsis/search/NGramGraphParallel/include/Splitter.hpp"
-#include "/home/ngialitsis/search/NGramGraphParallel/include/Payload.hpp"
-#include "/home/ngialitsis/search/NGramGraphParallel/include/Atom.hpp"
-#include "ProximityApproach.hpp"
-
+#include <functional>
 using namespace std;
 
 
-Handler::Handler(){}
-
-int Handler::getGraph(const char* msg){
-	std::string TEXT_PAYLOAD = std::string(msg);
-	int WINDOWSIZE =  NGRAMSIZE_DEFAULT_VALUE;
-	int NGRAMSIZE_VALUE =  2;
-
-	cout << "PAYLOAD : "<<TEXT_PAYLOAD<<endl;
-	cout << "WINDOW : "<<WINDOWSIZE<<endl;
-	cout << "NGRAMS :"<<NGRAMSIZE_VALUE<<endl;
-	
-	StringSplitter testStringSplitter(NGRAMSIZE_VALUE);
-	StringPayload testStringPayload(TEXT_PAYLOAD);
-		
-	ProximityApproach* approach = new SymmetricApproach();
-	NGramGraph testNGramGraph(nullptr, &testStringSplitter, &testStringPayload, 2, approach);
-	testNGramGraph.createGraph();
-	testNGramGraph.printGraphviz();
-	testNGramGraph.printGraphvizToFile("out.dot");
-	
-	return 1;
+std::function<double (const char*,const char*)> similarityFunction;
+Handler::Handler( double(*similarityFunction)(const char*, const char*),  int ngram_size,  int window_size){
+	extern std::function<double (const char*,const char*)> similarityFunction;
+	this->NGRAMSIZE_VALUE = ngram_size;
+	this->WINDOWSIZE = window_size;
+	similarityFunction = similarityFunction;
 }
 
+double Handler::dissimilarity(const char* msg1, const char* msg2){
+	extern std::function<double (const char*,const char*)> similarityFunction;
+	return 1-similarityFunction(msg1, msg2);
+}

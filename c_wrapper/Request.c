@@ -4,13 +4,13 @@
 
 int main(void){
 	printf("\tsending request to server..\n");
-	char msg[20] = "Hello World";
-	assert(msg);
-
-	for(int i = 0 ; i < 3 ; i ++){
-	
-		int graphid = HandleRequest(msg);
-		printf("graphid=%d\n",i);
+	char msg1[100];
+	char msg2[100];
+	while(1){
+		memset(msg1,0,100);
+		memset(msg2,0,100);
+		scanf("%s", &msg1);
+		scanf("%s", &msg2);
+		printf("\n%s\n\t%s\nVS = %.2f\n",msg1,msg2,valueDissimilarity(msg1, msg2));
 	}
-	printf("client terminating\n");
 }

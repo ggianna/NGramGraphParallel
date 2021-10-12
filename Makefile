@@ -8,7 +8,6 @@ OPENCL_HEADERS_FOLDER		= /home/ngialitsis/CApplications/OpenCL-SDK/include/cpp/
 C_WRAPPER_FOLDER		= /home/ngialitsis/search/NGramGraphParallel/c_wrapper
 ###############
 
-
 OBJECTS	= $(SOURCES_FOLDER)/GraphSimilarity.o $(SOURCES_FOLDER)/NGramGraph.o $(SOURCES_FOLDER)/StringAtom.o $(SOURCES_FOLDER)/StringPayload.o $(SOURCES_FOLDER)/StringSplitter.o $(SOURCES_FOLDER)/ProximityApproach.o $(SOURCES_FOLDER)/NGGUpdateOperator.o $(SOURCES_FOLDER)/NGGMergeOperator.o $(SOURCES_FOLDER)/DocumentClass.o $(SOURCES_FOLDER)/OpenclUpdateComputation.o $(SOURCES_FOLDER)/FileUtils.o $(SOURCES_FOLDER)/OclUpdatableClass.o $(SOURCES_FOLDER)/InputParser.o $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so   $(C_WRAPPER_FOLDER)/libC_Interface.so  $(C_WRAPPER_FOLDER)/libStringSplitter.so $(C_WRAPPER_FOLDER)/libNGramGraph.so $(C_WRAPPER_FOLDER)/libProximityApproach.so
 
 OUT = $(TEST_PROGRAMS_FOLDER)/createClassGraphs $(TEST_PROGRAMS_FOLDER)/testOpenclUpdate $(TEST_PROGRAMS_FOLDER)/test $(MEASUREMENT_PROGRAMS_FOLDER)/profile_update_kernel $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_exec_time $(MEASUREMENT_PROGRAMS_FOLDER)/ht_size_vs_value_similarity $(MEASUREMENT_PROGRAMS_FOLDER)/profile_parallel_class_graph_construction $(MEASUREMENT_PROGRAMS_FOLDER)/updates_number_vs_time $(DEMOS_FOLDER)/demo $(TEST_PROGRAMS_FOLDER)/NGramGraphTransformSaveString $(C_WRAPPER_FOLDER)/Request
@@ -87,14 +86,19 @@ $(C_WRAPPER_FOLDER)/libStringSplitter.so: $(SOURCES_FOLDER)/StringSplitter.cpp $
 $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so: $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.cpp $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.h $(C_WRAPPER_FOLDER)/libStringSplitter.so $(C_WRAPPER_FOLDER)/libProximityApproach.so $(C_WRAPPER_FOLDER)/libNGramGraph.so
 	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.cpp -L$(C_WRAPPER_FOLDER) -lStringSplitter -lNGramGraph -lProximityApproach -o $@
 
-$(C_WRAPPER_FOLDER)/libC_Interface.so: $(C_WRAPPER_FOLDER)/C_Interface.cpp $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so
+$(C_WRAPPER_FOLDER)/libC_Interface.so: $(C_WRAPPER_FOLDER)/C_Interface.cpp $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so 
 	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(C_WRAPPER_FOLDER)/C_Interface.cpp -L$(C_WRAPPER_FOLDER) -lC_HandleGraphRequest -lStringSplitter -lStringAtom -lStringPayload -o $@
 
-$(C_WRAPPER_FOLDER)/Request: $(C_WRAPPER_FOLDER)/Request.c $(C_WRAPPER_FOLDER)/libC_Interface.so 
-	$(C) $(C_WRAPPER_FOLDER)/Request.c -L$(C_WRAPPER_FOLDER) -lC_Interface -o $@
+$(C_WRAPPER_FOLDER)/Request: $(C_WRAPPER_FOLDER)/Request.c $(C_WRAPPER_FOLDER)/libC_Interface.so  $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.h $(C_WRAPPER_FOLDER)/libStringSplitter.so $(C_WRAPPER_FOLDER)/libProximityApproach.so $(C_WRAPPER_FOLDER)/libNGramGraph.so $(C_WRAPPER_FOLDER)/libGraphSimilarity.so
+	$(C) $(C_WRAPPER_FOLDER)/Request.c -L$(C_WRAPPER_FOLDER) -lC_Interface  -lStringSplitter -lNGramGraph -lProximityApproach -lGraphSimilarity  -o $@
 
 $(SOURCES_FOLDER)/GraphSimilarity.o: $(SOURCES_FOLDER)/GraphSimilarity.cpp $(HEADERS_FOLDER)/GraphSimilarity.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/GraphSimilarity.cpp -o $@
+
+$(C_WRAPPER_FOLDER)/libGraphSimilarity.so: $(SOURCES_FOLDER)/GraphSimilarity.cpp $(HEADERS_FOLDER)/GraphSimilarity.hpp
+	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(SOURCES_FOLDER)/GraphSimilarity.cpp -o $@
+
+
 
 $(SOURCES_FOLDER)/NGramGraph.o: $(SOURCES_FOLDER)/NGramGraph.cpp $(HEADERS_FOLDER)/NGramGraph.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/NGramGraph.cpp -o $@
@@ -110,11 +114,12 @@ $(C_WRAPPER_FOLDER)/libStringAtom.so: $(SOURCES_FOLDER)/StringAtom.cpp $(HEADERS
 	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(SOURCES_FOLDER)/StringAtom.cpp -o $@
 
 
+
 $(SOURCES_FOLDER)/StringPayload.o: $(SOURCES_FOLDER)/StringPayload.cpp $(HEADERS_FOLDER)/StringPayload.hpp
 	$(CC) $(FLAGS) $(SOURCES_FOLDER)/StringPayload.cpp -o $@
 
-$(C_WRAPPER_FOLDER)/libStringPayload.so: $(SOURCES_FOLDER)/StringPayload.cpp $(HEADERS_FOLDER)/StringPayload.hpp
-	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(SOURCES_FOLDER)/StringPayload.cpp -L$(C_WRAPPER_FOLDER) -lStringPayload -lStringAtom -o $@
+$(C_WRAPPER_FOLDER)/libStringPayload.so: $(SOURCES_FOLDER)/StringPayload.cpp $(HEADERS_FOLDER)/StringPayload.hpp $(C_WRAPPER_FOLDER)/libStringAtom.so
+	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(SOURCES_FOLDER)/StringPayload.cpp -L$(C_WRAPPER_FOLDER) -lStringAtom -o $@
 
 
 $(SOURCES_FOLDER)/StringSplitter.o: $(SOURCES_FOLDER)/StringSplitter.cpp $(HEADERS_FOLDER)/StringSplitter.hpp $(C_WRAPPER_FOLDER)/libStringPayload.so $(C_WRAPPER_FOLDER)/libStringAtom.so
