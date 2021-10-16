@@ -1,40 +1,50 @@
 #include <cstdlib>
 #include "C_Interface.h"
-#include "C_HandleGraphRequest.h"
-#include "GraphComparator.hpp"
-#include "GraphSimilarity.hpp"
-#include "GraphComparator.hpp"
-#include "NGramGraph.hpp"
-#include "StringSplitter.hpp"
-#include "ProximityApproach.hpp"
-
+#include "C_NGramGraphConfiguration.h"
 #ifdef __cplusplus
 extern "C"{
 #endif
 
 
-double valueDissimilarity(const char* msg1,const char* msg2){
-	Handler* handler = new Handler(nullptr, 3, 2);
-	std::string s1 = std::string(msg1);
-	std::string s2 = std::string(msg2);
-	StringSplitter stringSplitter(handler->NGRAMSIZE_VALUE);
-	StringPayload p1(s1);
-	StringPayload p2(s2);
-	ProximityApproach* approach = new SymmetricApproach();
-	NGramGraph G1(nullptr, &stringSplitter, &p1, handler->NGRAMSIZE_VALUE, approach);
-	NGramGraph G2(nullptr, &stringSplitter, &p2, handler->NGRAMSIZE_VALUE, approach);
+/** Default constructor */
+void ngg_construct_graph_database(char** ptrs){
 	
-	G1.createGraph();
-	G2.createGraph();
-	GraphComparator<std::string, std::string> comparator;
-	GraphSimilarity sim = comparator.compare(G1, G2);
-	return 1 - sim.getSimilarityComponents()["valueSimilarity"];
+	int text_id = 0;
+	char* text = ptrs[0];
+	while (text) 
+	{ 
+		ngg_construct(text_id, text);
+		text = DB.ptrs[++text_id];
+	}
 }
 
-// double computeDissimilarity(const char* msg1, const char* msg2){
-// 	Handler* handler = new Handler(valueSimilarity, 3, 2);
-// 	return handler->dissimilarity(msg1, msg2);
-// }
+double ngg_construct(int text_id, const char* text){
+	std::string s = std::string(text);
+	StringPayload p(s);
+	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
+	NGG.createGraph();
+	NGramGraphDB.push_back(NGG);
+}
+
+
+double ngg_dissimilarity(int first_text_id, int second_text_id){
+
+	GraphComparator<std::string, std::string> comparator;
+	double cs = 
+		comparator.calculateContainmentSimilarity(
+			NGramGraphDB.at(first_text_id),
+			NGramGraphDB.at(second_text_id)
+		);
+	return 1 - cs;
+}
+
+
+
+
+	// double computeDissimilarity(const char* msg1, const char* msg2){
+	// 	Handler* handler = new Handler(valueSimilarity, 3, 2);
+	// 	return handler->dissimilarity(msg1, msg2);
+	// }
 
 
 #ifdef __cplusplus
