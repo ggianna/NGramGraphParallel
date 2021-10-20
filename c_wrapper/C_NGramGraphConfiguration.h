@@ -17,11 +17,14 @@ typedef struct sPalDB
    } PalDB;
 static PalDB DB;
 
+
+
 static const int NGRAMSIZE_VALUE = 3;
 static const int WINDOWSIZE = 3;
 static ProximityApproach* approach = new SymmetricApproach();
 static GraphComparator<std::string, std::string> comparator;
 static StringSplitter stringSplitter(NGRAMSIZE_VALUE);
 static std::vector<NGramGraph> NGramGraphDB;
+
 #endif
 

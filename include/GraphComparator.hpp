@@ -50,7 +50,7 @@ class GraphComparator
          * \return The similarity between the two graphs, in GraphSimilarity format.
          */
         virtual GraphSimilarity compare(ProximityGraph<PayloadType, AtomType> &pGraph1, ProximityGraph<PayloadType, AtomType> &pGraph2);
-
+		virtual double calculateContainmentSimilarity(ProximityGraph<PayloadType, AtomType> &pGraph1, ProximityGraph<PayloadType, AtomType> &pGraph2);
 
 
     protected:
@@ -64,7 +64,6 @@ class GraphComparator
 	virtual double calculateValueRatio(ProximityGraph<PayloadType, AtomType> &pGraph1, ProximityGraph<PayloadType, AtomType> &pGraph2);
 
 
-
 	/*
 	 * Calculates the ratio of two edge weights, smaller to bigger.
 	 * \param w1 The first edge weight.
@@ -72,6 +71,8 @@ class GraphComparator
 	 * \return Their ratio, smaller to bigger.
 	 */
 	virtual double minMaxRatio(double w1, double w2);
+
+
 };
 
 

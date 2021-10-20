@@ -6,24 +6,28 @@ extern "C"{
 #endif
 
 
-/** Default constructor */
-void ngg_construct_graph_database(char** ptrs){
-	
-	int text_id = 0;
-	char* text = ptrs[0];
-	while (text) 
-	{ 
-		ngg_construct(text_id, text);
-		text = DB.ptrs[++text_id];
-	}
-}
-
-double ngg_construct(int text_id, const char* text){
+void ngg_construct(int text_id, const char* text){
 	std::string s = std::string(text);
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
+	NGramGraphDB.reserve(1); 
 	NGramGraphDB.push_back(NGG);
+	printf("pushed back \"%s\"\n",text);
+}
+
+
+/** Default constructor */
+void ngg_construct_graph_database(char** ptrs, int num_graphs){
+	
+	int text_id = 0;
+	char* text = NULL;
+	while (text_id != num_graphs) 
+	{ 
+		text = ptrs[text_id++];
+		ngg_construct(text_id, text);
+		
+	}
 }
 
 
