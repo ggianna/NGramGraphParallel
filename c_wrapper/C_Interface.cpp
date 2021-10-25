@@ -26,6 +26,7 @@ void ngg_construct_graph_database(char** ptrs, int num_graphs){
 		std::cout<<"text id:"<<text_id<<std::endl;
 		text = ptrs[text_id++];
 		if(text==NULL || strlen(text) < NGRAMSIZE_VALUE ) {
+			ngg_construct(text_id, (char*)new (nothrow) char[NGRAMSIZE_VALUE]());
 			continue;
 		}
 		ngg_construct(text_id, text);
