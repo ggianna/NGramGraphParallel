@@ -6,7 +6,7 @@
 
 int main(void){
 	
-    int ndocs = 3;
+    int ndocs = 2;
 	char** docs = malloc(ndocs*sizeof(char*));
     for(int i = 0; i < ndocs; i++){
         printf("\ttype sentence..\n");
@@ -15,9 +15,6 @@ int main(void){
         printf("\t\t%s\n",docs[i]);
     }
     ngg_construct_graph_database(docs, ndocs);
-    printf("%.2f\n",ngg_dissimilarity(0,0));
-    printf("%.2f\n",ngg_dissimilarity(1,1));
-    printf("%.2f\n",ngg_dissimilarity(2,2));
-    printf("%.2f\n",ngg_dissimilarity(0,1));
-    printf("%.2f\n",ngg_dissimilarity(0,2));
+    // ngg_store_graph_database('mydb.txt');
+    // ngg_load_graph_database('mydb.txt');
 }

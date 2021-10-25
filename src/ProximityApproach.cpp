@@ -21,6 +21,7 @@
 #include "NGramGraph.hpp"
 
 
+
 NonSymmetricApproach::NonSymmetricApproach()
 {
 	//constructor
@@ -30,6 +31,8 @@ NonSymmetricApproach::~NonSymmetricApproach()
 {
 	//destructor
 }
+
+
 
 void NonSymmetricApproach::createGraph(NGramGraph *g)
 {
@@ -74,6 +77,8 @@ void NonSymmetricApproach::createGraph(NGramGraph *g)
 	//  std::cout << "---------\nGraphviz print:" << std:: endl;
 	//  printGraphviz();
 }
+
+
 
 void NonSymmetricApproach::createEdgesToNeighbors(Graph(std::string)::vertex_descriptor vHead,
 				vector<typename Graph(std::string)::vertex_descriptor> neighbors,
