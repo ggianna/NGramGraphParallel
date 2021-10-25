@@ -11,22 +11,23 @@ void ngg_construct(int text_id, const char* text){
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
-	std::string fname = "seize-day-"+ std::to_string(text_id) + ".txt";
-	NGG.printGraphvizToFile(fname);
 	NGramGraphDB.reserve(1); 
 	NGramGraphDB.push_back(NGG);
-	printf("pushed back \"%s\"\n",text);
 }
 
 
 /** Default constructor */
 void ngg_construct_graph_database(char** ptrs, int num_graphs){
-	
+	std::cout << "construct graph database" << endl;		
 	int text_id = 0;
 	char* text = NULL;
 	while (text_id != num_graphs) 
 	{ 
+		std::cout<<"text id:"<<text_id<<std::endl;
 		text = ptrs[text_id++];
+		if(text==NULL || strlen(text) < NGRAMSIZE_VALUE ) {
+			continue;
+		}
 		ngg_construct(text_id, text);
 		
 	}

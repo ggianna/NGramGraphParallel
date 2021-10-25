@@ -15,6 +15,10 @@ int main(void){
         printf("\t\t%s\n",docs[i]);
     }
     ngg_construct_graph_database(docs, ndocs);
-    // ngg_store_graph_database('mydb.txt');
-    // ngg_load_graph_database('mydb.txt');
+    printf("%.2f\n",ngg_dissimilarity(0,1));
+    
+    // printf("%.2f\n",ngg_dissimilarity(1,1));
+    // printf("%.2f\n",ngg_dissimilarity(2,2));
+    // printf("%.2f\n",ngg_dissimilarity(0,1));
+    // printf("%.2f\n",ngg_dissimilarity(0,2));
 }
