@@ -11,6 +11,8 @@ void ngg_construct(int text_id, const char* text){
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
+	std::string filename =  std::to_string(text_id)+".txt";
+	NGG.printGraphvizToFile(filename);
 	NGramGraphDB.reserve(1); 
 	NGramGraphDB.push_back(NGG);
 }
@@ -21,15 +23,18 @@ void ngg_construct_graph_database(char** ptrs, int num_graphs){
 	std::cout << "construct graph database" << endl;		
 	int text_id = 0;
 	char* text = NULL;
+	std::string placeholder(NGRAMSIZE_VALUE, ' '); 
 	while (text_id != num_graphs) 
 	{ 
 		std::cout<<"text id:"<<text_id<<std::endl;
 		text = ptrs[text_id++];
-		if(text==NULL || strlen(text) < NGRAMSIZE_VALUE ) {
-			ngg_construct(text_id, (char*)new (nothrow) char[NGRAMSIZE_VALUE]());
-			continue;
+		if(text==nullptr || strlen(text) < NGRAMSIZE_VALUE ) {
+			ngg_construct(text_id, placeholder.c_str());
+		}  
+		else{
+			ngg_construct(text_id, text);
 		}
-		ngg_construct(text_id, text);
+		
 		
 	}
 }
