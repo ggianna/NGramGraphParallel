@@ -100,7 +100,7 @@ class NGramGraph : public ProximityGraph<std::string, std::string>
 	 * \return A bool value, true if the two objects are considered equal, false otherwise.
 	 */
 	bool operator==(const NGramGraph& other);
-    NGramGraph operator=(const NGramGraph& other);
+    // NGramGraph operator=(const NGramGraph& other);
 
 
     protected:

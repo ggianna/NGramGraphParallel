@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include "C_Interface.h"
 #include "C_NGramGraphConfiguration.h"
+#include <algorithm>
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -8,13 +9,21 @@ extern "C"{
 
 void ngg_construct(int text_id, const char* text){
 	std::string s = std::string(text);
+	std::cout<<"constructing "<<text<<std::endl;
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
-	std::string filename =  std::to_string(text_id)+".txt";
-	NGG.printGraphvizToFile(filename);
-	NGramGraphDB.reserve(1); 
-	NGramGraphDB.push_back(NGG);
+	if(text_id==0 && !NGramGraphDB.empty()){
+
+		std::cout<<"Pushed - DB contains "<<NGramGraphDB.size()<<" elements"<<std::endl;
+		NGramGraphDB.reserve(1); 
+		NGramGraphDB.push_back(NGG);
+		std::swap(NGramGraphDB.front(), NGramGraphDB.back());
+	}
+	else{
+		NGramGraphDB.reserve(1); 
+		NGramGraphDB.push_back(NGG);
+	}
 }
 
 
@@ -23,12 +32,13 @@ void ngg_construct_graph_database(char** ptrs, int num_graphs){
 	std::cout << "construct graph database" << endl;		
 	int text_id = 0;
 	char* text = NULL;
-	std::string placeholder(NGRAMSIZE_VALUE, ' '); 
+	std::string placeholder(NGRAMSIZE_VALUE+1, ' '); 
 	while (text_id != num_graphs) 
 	{ 
 		std::cout<<"text id:"<<text_id<<std::endl;
 		text = ptrs[text_id++];
 		if(text==nullptr || strlen(text) < NGRAMSIZE_VALUE ) {
+			std::cout<<"construct placeholder"<<std::endl;
 			ngg_construct(text_id, placeholder.c_str());
 		}  
 		else{
@@ -68,6 +78,7 @@ void ngg_construct_graph_database(char** ptrs, int num_graphs){
 
 double ngg_dissimilarity(int first_text_id, int second_text_id){
 
+	std::cout<<"compute ngg dissimilarity between "<< first_text_id<<", "<<second_text_id<<std::endl;
 	GraphComparator<std::string, std::string> comparator;
 	double cs = 
 		comparator.calculateContainmentSimilarity(
