@@ -14,11 +14,11 @@ void ngg_construct(int text_id, const char* text){
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
 	if(text_id==0 && !NGramGraphDB.empty()){
-
-		std::cout<<"Pushed - DB contains "<<NGramGraphDB.size()<<" elements"<<std::endl;
-		NGramGraphDB.reserve(1); 
+		std::cout<<"DB contains "<<NGramGraphDB.size()<<" elements"<<std::endl; 
 		NGramGraphDB.push_back(NGG);
 		std::swap(NGramGraphDB.front(), NGramGraphDB.back());
+		NGramGraphDB.pop_back();
+		std::cout<<"Pushed - DB contains "<<NGramGraphDB.size()<<" elements"<<std::endl; 
 	}
 	else{
 		NGramGraphDB.reserve(1); 
@@ -32,8 +32,8 @@ void ngg_construct_graph_database(char** ptrs, int num_graphs){
 	std::cout << "construct graph database" << endl;		
 	int text_id = 0;
 	char* text = NULL;
-	std::string placeholder(NGRAMSIZE_VALUE+1, ' '); 
-	while (text_id != num_graphs) 
+	std::string placeholder(NGRAMSIZE_VALUE+1, ' ');
+	while (text_id != num_graphs+1) 
 	{ 
 		std::cout<<"text id:"<<text_id<<std::endl;
 		text = ptrs[text_id++];
@@ -44,8 +44,6 @@ void ngg_construct_graph_database(char** ptrs, int num_graphs){
 		else{
 			ngg_construct(text_id, text);
 		}
-		
-		
 	}
 }
 
