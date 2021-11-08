@@ -9,7 +9,7 @@ extern "C"{
 
 void ngg_construct(int text_id, const char* text){
 	std::string s = std::string(text);
-	std::cout<<"constructing "<<text<<std::endl;
+	// std::cout<<"constructing "<<text<<std::endl;
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
@@ -29,6 +29,9 @@ void ngg_construct(int text_id, const char* text){
 
 /** Default constructor */
 void ngg_construct_graph_database(char** ptrs, int num_graphs){
+	if(!NGramGraphDB.empty()){
+		return;
+	}
 	std::cout << "construct graph database" << endl;		
 	int text_id = 0;
 	char* text = NULL;
