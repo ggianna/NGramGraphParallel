@@ -32,7 +32,7 @@
 #define EDGE_WEIGHT_TYPE float
 // graph macro
 #define Graph(AtomType) boost::adjacency_list<boost::vecS,boost::vecS,boost::bidirectionalS,Atom<AtomType>,EdgeWeightProperty>
-
+//todo: serialize graph(AtomType)
 
 // property typedef for readabilitiness
 typedef boost::property<boost::edge_weight_t, EDGE_WEIGHT_TYPE> EdgeWeightProperty;

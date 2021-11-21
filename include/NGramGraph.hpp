@@ -22,6 +22,9 @@
 // project headers
 #include "ProximityGraph.hpp"
 #include "StringSplitter.hpp"
+#include "cereal/types/unordered_map.hpp"
+#include "cereal/types/memory.hpp"
+#include "cereal/archives/binary.hpp"
 
 // defines
 #define NGRAMSIZE_DEFAULT_VALUE 3
@@ -46,6 +49,9 @@ class ProximityApproach; //We need forward declaration, because NGramGraph and P
 class NGramGraph : public ProximityGraph<std::string, std::string>
 {
     public:
+
+
+        
         /**
          * \var CorrelationWindow The maximum distance of terms to be considered as correlated. Default is 4.
          *
@@ -109,6 +115,11 @@ class NGramGraph : public ProximityGraph<std::string, std::string>
 	 *
 	 */
 	ProximityApproach *approach;
+
+
+
+
+
 	
 };
 #ifdef __cplusplus

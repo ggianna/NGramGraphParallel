@@ -7,6 +7,10 @@
 #include "NGramGraph.hpp"
 #include "StringSplitter.hpp"
 #include "ProximityApproach.hpp"
+#include "cereal/types/unordered_map.hpp"
+#include "cereal/types/memory.hpp"
+#include "cereal/archives/binary.hpp"
+
 #include <iostream>
 #include <fstream>
 

@@ -11,6 +11,14 @@ void ngg_construct(int text_id, const char* text);
 void ngg_construct_graph_database(char** ptrs, int num_graphs);
 void ngg_store_graph_database(const char* filename);
 void ngg_load_graph_database(const char* filename);
+void ngg_serialize( const char* text);
+void ngg_deserialize();
+double** ngg_compute_partition_distance_matrix(int n_parts);
+void ngg_visualize_distance_matrix(double** DistMat, int n_parts);
+void ngg_compute_partition(char** docs, int n_docs, double** DM, int offset);
+void ngg_compute_cross_partition(char** docs, int n_docs, double** DM, int offset1, int offset2);
+double** ngg_compute_distance_matrix(char** docs, int n_docs);
+
 #ifdef __cplusplus
 }
 #endif
