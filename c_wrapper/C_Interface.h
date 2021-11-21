@@ -15,10 +15,10 @@ void ngg_serialize( const char* text);
 void ngg_deserialize();
 double** ngg_compute_partition_distance_matrix(int n_parts);
 void ngg_visualize_distance_matrix(double** DistMat, int n_parts);
-void ngg_compute_partition(char** docs, int n_docs, double** DM, int offset);
-void ngg_compute_cross_partition(char** docs, int n_docs, double** DM, int offset1, int offset2);
-double** ngg_compute_distance_matrix(char** docs, int n_docs);
-
+void ngg_compute_inner_partition_distances(double** DistMat, char** docs, int ndocs, int offset);
+void ngg_compute_cross_partition_distances(double** DistMat, char** docs, int ndocs, int offset1, int offset2);
+double** ngg_compute_distance_matrix(char** docs, int ndocs);
+double** new_square_mat(int n);
 #ifdef __cplusplus
 }
 #endif
