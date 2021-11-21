@@ -11,7 +11,7 @@ void test_graph_construct(){
 	char** docs = malloc(ndocs*sizeof(char*));
     strcpy(docs, "hello world");
     strcpy(docs+1, "hello there");
-    ngg_construct_graph_database(docs, ndocs);
+    make_cache_graphs(docs, ndocs);
     double dissimilarity = ngg_dissimilarity(0,1);
     assert(dissimilarity > 0);
 }

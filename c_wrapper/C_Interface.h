@@ -8,11 +8,7 @@ extern "C" {
 // double valueDissimilarity(const char* msg1,const char* msg2);
 double ngg_dissimilarity(int first_text_id, int second_text_id);
 void ngg_construct(int text_id, const char* text);
-void ngg_construct_graph_database(char** ptrs, int num_graphs);
-void ngg_store_graph_database(const char* filename);
-void ngg_load_graph_database(const char* filename);
-void ngg_serialize( const char* text);
-void ngg_deserialize();
+void make_cache_graphs(char** ptrs, int num_graphs);
 double** ngg_compute_partition_distance_matrix(int n_parts);
 void ngg_visualize_distance_matrix(double** DistMat, int n_parts);
 void ngg_compute_inner_partition_distances(double** DistMat, char** docs, int ndocs, int offset);

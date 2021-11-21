@@ -12,40 +12,37 @@ void ngg_construct(int text_id, const char* text){
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
-	if(text_id==0 && !NGramGraphDB.empty()){
-		NGramGraphDB.push_back(NGG);
-		std::swap(NGramGraphDB.front(), NGramGraphDB.back());
-		NGramGraphDB.pop_back();
+	if(text_id==0 && !NGramGraphCache.empty()){
+		NGramGraphCache.push_back(NGG);
+		std::swap(NGramGraphCache.front(), NGramGraphCache.back());
+		NGramGraphCache.pop_back();
 	}
 	else{
-		NGramGraphDB.reserve(1); 
-		NGramGraphDB.push_back(NGG);
+		NGramGraphCache.reserve(1); 
+		NGramGraphCache.push_back(NGG);
 	}
 }
 
 
 /** Default constructor */
-void ngg_construct_graph_database(char** ptrs, int num_graphs){	
-	int text_id = 0;
-	char* text = NULL;
-	std::string placeholder(NGRAMSIZE_VALUE+1, ' ');
-	while (text_id != num_graphs) { 
-		text = ptrs[text_id++];
-		if(text==nullptr || strlen(text) < NGRAMSIZE_VALUE ) {
-			ngg_construct(NGramGraphDB.size(), placeholder.c_str());
-		}  
-		else{
-			ngg_construct(NGramGraphDB.size(), text);
-		}
+
+void make_cache_graphs(char** ptrs, int ngraphs){	
+	std::string placeholder(NGRAMSIZE_VALUE, ' ');
+	for(int i = 0 ; i < ngraphs; i++){
+		const char* text = ptrs[i];
+		if(text==nullptr || strlen(text) < NGRAMSIZE_VALUE)
+			text = placeholder.c_str();
+		ngg_construct(NGramGraphCache.size(), text);
 	}
+	
 }
 
 
 
-void ngg_delete_graphs(int offset, int num_graphs){
-	for(int i = offset ; i < offset+num_graphs ; i++){
-		std::swap(NGramGraphDB.at(offset), NGramGraphDB.back());
-		NGramGraphDB.pop_back();
+void uncache_graphs(int offset, int ngraphs){
+	for(int i = offset ; i < offset+ngraphs ; i++){
+		std::swap(NGramGraphCache.at(offset), NGramGraphCache.back());
+		NGramGraphCache.pop_back();
 	}		
 }
 /** Default constructor */
@@ -63,8 +60,8 @@ double ngg_dissimilarity(int first_text_id, int second_text_id){
 	GraphComparator<std::string, std::string> comparator;
 	double cs = 
 		comparator.calculateContainmentSimilarity(
-			NGramGraphDB.at(first_text_id),
-			NGramGraphDB.at(second_text_id)
+			NGramGraphCache.at(first_text_id),
+			NGramGraphCache.at(second_text_id)
 		);
 	
 	return 1 - cs;
@@ -95,15 +92,15 @@ double** ngg_compute_distance_matrix(char** docs, int ndocs){
 			if(cmp_p < nparts-1) ngraphs = MAX_MEMORY_GRAPHS; else ngraphs = ndocs-cmp_offset;
 			ngg_compute_cross_partition_distances(DistMat, docs, ngraphs, offset, cmp_offset);
 		}
-		NGramGraphDB.clear();
+		NGramGraphCache.clear();
 	}
 	return DistMat;
 }
 
 
 void ngg_compute_cross_partition_distances( double** DistMat, char** docs, int ndocs, int offset1, int offset2){
-	int nprev = NGramGraphDB.size();
-	ngg_construct_graph_database(docs+offset2, nprev);
+	int nprev = NGramGraphCache.size();
+	make_cache_graphs(docs+offset2, nprev);
 	for(int i = 0; i < nprev; i++){
 		for(int j = 0 ; j < ndocs; j++){		
 				DistMat[i+offset1][j+offset2] =
@@ -112,12 +109,12 @@ void ngg_compute_cross_partition_distances( double** DistMat, char** docs, int n
 				std::cout<<"cross D("<<i+offset1<<","<<j+offset2<<")"<<std::endl;
 		}
 	}
-	ngg_delete_graphs(nprev,ndocs);
+	uncache_graphs(nprev,ndocs);
 }
 
 
 void ngg_compute_inner_partition_distances(double** DistMat, char** docs, int ndocs, int offset){
-	ngg_construct_graph_database(docs, ndocs);
+	make_cache_graphs(docs, ndocs);
 	double** PartitionDistMat =  ngg_compute_partition_distance_matrix(ndocs);
 	for(int i = 0 ; i < ndocs; i++){
 		for(int j = i ; j < ndocs; j++){

@@ -32,7 +32,7 @@ static const int MAX_MEMORY_GRAPHS = 2;
 static ProximityApproach* approach = new NonSymmetricApproach();
 static GraphComparator<std::string, std::string> comparator;
 static StringSplitter stringSplitter(NGRAMSIZE_VALUE);
-static std::vector<NGramGraph> NGramGraphDB;
+static std::vector<NGramGraph> NGramGraphCache;
 
 #endif
 
