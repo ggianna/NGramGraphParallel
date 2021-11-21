@@ -96,9 +96,11 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
     double containmentSimilarity;
     unsigned int numberOfEdges1 = pGraph1.numberOfEdges();
     unsigned int numberOfEdges2 = pGraph2.numberOfEdges();
-    unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
+    // unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
+    unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
+
     double VR = calculateValueRatio(pGraph1, pGraph2);
-    return  VR / smallGraphEdges;
+    return  VR / bigGraphEdges;
 }
 
 template <typename PayloadType, typename AtomType>

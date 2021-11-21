@@ -17,13 +17,12 @@ void test_graph_construct(){
 }
 
 void test_serial(char* text){
-     ngg_serialize(text);
+     ngg_serialize(text);   
 }
 
 void test_distance_matrix(int n){
-	char** docs = malloc((n+1)*sizeof(char*));
-    docs[0] = NULL;
-    for(int i = 1; i < n; i++){
+	char** docs = malloc(n*sizeof(char*));
+    for(int i = 0; i < n; i++){
         printf("\ttype sentence..\n");
         docs[i] = (char *) malloc(100);
         gets(docs[i]);
@@ -31,9 +30,11 @@ void test_distance_matrix(int n){
     }
     // ngg_construct_graph_database(docs, n);
     
-    ngg_compute_distance_matrix(docs, n);
+    DistMat* DM = ngg_compute_distance_matrix(docs, n);
+    mat_vis(DM);
+    cerealize(DM);
 }
 
 int main(void){
-	test_distance_matrix(8);
+	test_distance_matrix(6);
 }
