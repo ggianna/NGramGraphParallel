@@ -17,46 +17,55 @@
 #include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
 
-
-typedef class SerializableRow{
-  public: 
-      double row;
-      SerializableRow(double x){
-        this->row = x;
-      };
-      SerializableRow(){};
-      ~SerializableRow(){};
-      template <class Archive>
-      void save( Archive & ar ) const
-      {
-        std::cout<<"serialize"<<std::endl;
-        ar( row );
-      }
-          
-      template <class Archive>
-      void load( Archive & ar )
-      {
-        std::cout<<"deserialize"<<std::endl;
-        ar( row );
-      }
-
-}SerializableRow;
-
-// class SerializableDistMat{
-//     public:
+class SerializableDistMat{
+    public:
         
-//         std::shared_ptr<SerializableRow> data;
-//         template <class Archive>
-//         void save( Archive & ar ) const{
-//             ar(data);
-//         }
+        std::vector<std::vector<double>> distances;
+        int n;
+        SerializableDistMat(DistMat* DM){
+
+          this->n = DM->n;
+
+          distances.empty();
+          distances.reserve(DM->n);
+          for(int i = 0 ; i < DM->n ; i++){
+            std::vector<double> row;
+            row.reserve(DM->n);
+            for(int j = 0 ; j < DM->n ; j++){
+              row.push_back(DM->distances[i][j]);   
+            }
+            distances.push_back(row);
+          }
+        }
+        SerializableDistMat(){;}
+        template <class Archive>
+        void save( Archive & ar ) const{
+            ar(distances, n);
+        }
                 
-//         template <class Archive>
-//         void load( Archive & ar ){
-//             ar(data);
-//         }
-// };
+        template <class Archive>
+        void load( Archive & ar ){
+            ar(distances, n);
+        }
+};
+
+
+
+DistMat* new_distance_matrix(int n){
+	DistMat* DM = new DistMat();
+	DM->distances = new double*[n];
+	for(int i = 0; i < n; i++){
+		DM->distances[i] = new double[n];
+		for(int j = 0; j < n; j++){
+			DM->distances[i][j] = 0;
+		}
+	}
+	DM->n = n;
+	return DM;
+}
 
 
 static const int NGRAMSIZE_VALUE = 1;
@@ -67,7 +76,7 @@ static ProximityApproach* approach = new NonSymmetricApproach();
 static GraphComparator<std::string, std::string> comparator;
 static StringSplitter stringSplitter(NGRAMSIZE_VALUE);
 static std::vector<NGramGraph> NGramGraphCache;
-
+DistMat* new_distance_matrix(int n);
 
 #endif
 

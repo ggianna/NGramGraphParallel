@@ -39,17 +39,33 @@ void make_cache_graphs(char** ptrs, int ngraphs){
 	
 }
 
+DistMat* decerialize(SerializableDistMat* SDM){
+	DistMat* DM = new_distance_matrix(SDM->n);
+	int row_id = 0;
+	for (std::vector<std::vector<double>>::const_iterator row = SDM->distances.begin(); row != SDM->distances.end(); ++row){
+		int cell_id = 0;
+		for (std::vector<double>::const_iterator cell = row->begin(); cell != row->end(); ++cell){
+			DM->distances[row_id][cell_id++] = *cell;
+		}	
+		row_id++;
+	}
+	return DM;
+}
 
 void cerealize(DistMat* DM){
 	
-	std::ofstream os("dmat.cereal", std::ios::binary);
+	std::ofstream os("dmat.bin", std::ios::binary);
 	cereal::BinaryOutputArchive oarchive( os );
-	SerializableRow S(3);
+	SerializableDistMat S(DM);
+	oarchive(S);
 	os.close();
-	std::ifstream is("dmat.cereal", std::ios::binary);
+	std::ifstream is("dmat.bin", std::ios::binary);
 	cereal::BinaryInputArchive iarchive(is);
-	SerializableRow loadedData;
-	iarchive(loadedData);
+	SerializableDistMat SDM;
+	iarchive(SDM);
+	DM = decerialize(&SDM);
+	std::cout<<"Deserialized"<<std::endl;
+	mat_vis(DM);
 	is.close();
 }
 
@@ -82,21 +98,6 @@ double ngg_dissimilarity(int first_text_id, int second_text_id){
 	return 1 - cs;
 }
 
-
-
-
-DistMat* new_distance_matrix(int n){
-	DistMat* DM = new DistMat();
-	DM->distances = new double*[n];
-	for(int i = 0; i < n; i++){
-		DM->distances[i] = new double[n];
-		for(int j = 0; j < n; j++){
-			DM->distances[i][j] = 0;
-		}
-	}
-	DM->n = n;
-	return DM;
-}
 
 
 DistMat* ngg_compute_distance_matrix(char** docs, int ndocs){	
