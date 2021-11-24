@@ -20,6 +20,7 @@ typedef struct  DistMat{
     int n;
 }DistMat;
 
+
 double ngg_dissimilarity(int first_text_id, int second_text_id);
 void ngg_construct(int text_id, const char* text);
 void make_cache_graphs(char** ptrs, int num_graphs);
@@ -31,7 +32,7 @@ DistMat* ngg_compute_distance_matrix(char** docs, int ndocs);
 DistMat* new_square_mat(int n);
 void mat_vis(DistMat* mat);
 void decerialize(const char* filename);
-
+double get_precomputed_distance_if_exists(int first_text_id, int second_text_id);
 
 #ifdef __cplusplus
 }

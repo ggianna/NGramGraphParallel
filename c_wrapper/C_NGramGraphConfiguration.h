@@ -67,7 +67,7 @@ DistMat* new_distance_matrix(int n){
 	return DM;
 }
 
-
+static DistMat* precomputedDistanceMatrix;
 static const int NGRAMSIZE_VALUE = 3;
 static const int WINDOWSIZE = 3;
 static const int MAX_MEMORY_GRAPHS = 2000;
