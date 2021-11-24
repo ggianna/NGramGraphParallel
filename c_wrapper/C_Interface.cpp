@@ -40,17 +40,23 @@ void make_cache_graphs(char** ptrs, int ngraphs){
 	
 }
 
-DistMat* decerialize(SerializableDistMat* SDM){
-	DistMat* DM = new_distance_matrix(SDM->n);
+void decerialize(const char* filename){
+	std::ifstream is(filename, std::ios::binary);
+	cereal::BinaryInputArchive iarchive(is);
+	SerializableDistMat SDM;
+	iarchive(SDM);
+	DistMat* DM = new_distance_matrix(SDM.n);
 	int row_id = 0;
-	for (std::vector<std::vector<double>>::const_iterator row = SDM->distances.begin(); row != SDM->distances.end(); ++row){
+	for (std::vector<std::vector<double>>::const_iterator row = SDM.distances.begin(); row != SDM.distances.end(); ++row){
 		int cell_id = 0;
 		for (std::vector<double>::const_iterator cell = row->begin(); cell != row->end(); ++cell){
 			DM->distances[row_id][cell_id++] = *cell;
 		}	
 		row_id++;
 	}
-	return DM;
+	mat_vis(DM);
+	is.close();
+	return;
 }
 
 void cerealize(DistMat* DM){
@@ -60,14 +66,7 @@ void cerealize(DistMat* DM){
 	SerializableDistMat S(DM);
 	oarchive(S);
 	os.close();
-	// std::ifstream is("dmat.bin", std::ios::binary);
-	// cereal::BinaryInputArchive iarchive(is);
-	// SerializableDistMat SDM;
-	// iarchive(SDM);
-	// DM = decerialize(&SDM);
-	// std::cout<<"Deserialized"<<std::endl;
-	// mat_vis(DM);
-	// is.close();
+
 }
 
 

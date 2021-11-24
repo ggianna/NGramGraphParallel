@@ -30,7 +30,7 @@ void ngg_compute_cross_partition_distances(DistMat* DM, char** docs, int ndocs, 
 DistMat* ngg_compute_distance_matrix(char** docs, int ndocs);
 DistMat* new_square_mat(int n);
 void mat_vis(DistMat* mat);
-void cerealize(DistMat* mat);
+void decerialize(const char* filename);
 
 
 #ifdef __cplusplus
