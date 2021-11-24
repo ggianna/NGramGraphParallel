@@ -29,6 +29,7 @@ void ngg_construct(int text_id, const char* text){
 /** Default constructor */
 
 void make_cache_graphs(char** ptrs, int ngraphs){	
+	std::cout<<"cache "<<ngraphs<<" graphs"<<std::endl;
 	std::string placeholder(NGRAMSIZE_VALUE+1, ' ');
 	for(int i = 0 ; i < ngraphs; i++){
 		const char* text = ptrs[i];
@@ -59,18 +60,19 @@ void cerealize(DistMat* DM){
 	SerializableDistMat S(DM);
 	oarchive(S);
 	os.close();
-	std::ifstream is("dmat.bin", std::ios::binary);
-	cereal::BinaryInputArchive iarchive(is);
-	SerializableDistMat SDM;
-	iarchive(SDM);
-	DM = decerialize(&SDM);
-	std::cout<<"Deserialized"<<std::endl;
-	mat_vis(DM);
-	is.close();
+	// std::ifstream is("dmat.bin", std::ios::binary);
+	// cereal::BinaryInputArchive iarchive(is);
+	// SerializableDistMat SDM;
+	// iarchive(SDM);
+	// DM = decerialize(&SDM);
+	// std::cout<<"Deserialized"<<std::endl;
+	// mat_vis(DM);
+	// is.close();
 }
 
 
 void uncache_graphs(int offset, int ngraphs){
+	std::cout<<"uncache "<<ngraphs<<" graphs"<<std::endl;
 	for(int i = offset ; i < offset+ngraphs ; i++){
 		std::swap(NGramGraphCache.at(offset), NGramGraphCache.back());
 		NGramGraphCache.pop_back();
@@ -104,8 +106,10 @@ DistMat* ngg_compute_distance_matrix(char** docs, int ndocs){
 	DistMat* DM = new_distance_matrix(ndocs);
 	const int maxcap = MAX_MEMORY_GRAPHS/2;
 	int nparts = std::ceil(double(ndocs)/maxcap);
+	
 	int ngraphs, offset, offset2;
 	for(int p = 0; p < nparts ; p++){
+		std::cout<<"Iteration " << p+1 << " / "<< nparts<<std::endl;
 		offset = p*maxcap;
 		if(p < nparts-1)  ngraphs = maxcap; else  ngraphs = ndocs-offset;
 		ngg_compute_inner_partition_distances(DM, docs, ngraphs, offset);
@@ -122,14 +126,15 @@ DistMat* ngg_compute_distance_matrix(char** docs, int ndocs){
 
 void ngg_compute_cross_partition_distances(DistMat* DM, char** docs, int ndocs, int offset1, int offset2){
 	int nprev = NGramGraphCache.size();
-	make_cache_graphs(docs+offset2, nprev);
+	make_cache_graphs(docs+offset2, ndocs);
 	for(int i = 0; i < nprev; i++){
 		for(int j = 0 ; j < ndocs; j++){		
 				DM->distances[i+offset1][j+offset2] =
 				DM->distances[j+offset2][i+offset1]
 				 	= ngg_dissimilarity(i,nprev+j);
-				if(j%1000 == 0)
+				if((j+1)%MAX_MEMORY_GRAPHS/2==0){
 					std::cout<<"cross D("<<i+offset1<<","<<j+offset2<<")"<<std::endl;
+				}
 		}
 	}
 	uncache_graphs(nprev,ndocs);
@@ -144,8 +149,7 @@ void ngg_compute_inner_partition_distances(DistMat* DM, char** docs, int ndocs, 
 			DM->distances[i+offset][j+offset] = 
 			DM->distances[j+offset][i+offset] =
 				PM->distances[i][j];
-			if(j == 0)
-				std::cout<<"inner D("<<i+offset<<","<<j+offset<<")"<<std::endl;
+			if((i+1)%MAX_MEMORY_GRAPHS/2==0)std::cout<<"inner D("<<i+offset<<","<<j+offset<<")"<<std::endl;
 		}
 
 	}

@@ -5,14 +5,14 @@
 extern "C" {
 #endif
 
-typedef struct sPalDB
-   { char *pals;  /* words all together */
-     char **ptrs;  /* pointers to each word */
-     int npals;	  /* number of words (there is space for 1 more) */
-     int csize;   /* allocated c size */
-     int *c;
-   } PalDB;
-static PalDB DB;
+// typedef struct sPalDB
+//    { char *pals;  /* words all together */
+//      char **ptrs;  /* pointers to each word */
+//      int npals;	  /* number of words (there is space for 1 more) */
+//      int csize;   /* allocated c size */
+//      int *c;
+//    } PalDB;
+// static PalDB DB;
 
 
 typedef struct  DistMat{

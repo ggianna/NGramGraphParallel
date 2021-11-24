@@ -68,9 +68,9 @@ DistMat* new_distance_matrix(int n){
 }
 
 
-static const int NGRAMSIZE_VALUE = 1;
-static const int WINDOWSIZE = 1;
-static const int MAX_MEMORY_GRAPHS = 4;
+static const int NGRAMSIZE_VALUE = 3;
+static const int WINDOWSIZE = 3;
+static const int MAX_MEMORY_GRAPHS = 2000;
 // static ProximityApproach* approach = new SymmetricApproach();
 static ProximityApproach* approach = new NonSymmetricApproach();
 static GraphComparator<std::string, std::string> comparator;
