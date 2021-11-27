@@ -31,7 +31,8 @@ void ngg_compute_cross_partition_distances(DistMat* DM, char** docs, int ndocs, 
 DistMat* ngg_compute_distance_matrix(char** docs, int ndocs);
 DistMat* new_square_mat(int n);
 void mat_vis(DistMat* mat);
-void decerialize(const char* filename);
+void cerealize(DistMat* DM, const char* binfile);
+void decerialize(const char* binfile);
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id);
 
 #ifdef __cplusplus

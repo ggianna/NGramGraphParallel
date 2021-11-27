@@ -40,15 +40,13 @@ void make_cache_graphs(char** ptrs, int ngraphs){
 	
 }
 
-void decerialize(const char* filename){
-	std::ifstream is("dmat.bin", std::ios::binary);
-	if (is.is_open()) {
-		is.close();
-	}
+void decerialize(const char* binfile){
+	std::ifstream is(binfile, std::ios::binary);
+	while(!is.good()){is.setstate(std::ios::goodbit);};
 	cereal::BinaryInputArchive iarchive(is);
 	SerializableDistMat SDM;
 	iarchive(SDM);
-	DistMat* precomputedDistanceMatrix = new_distance_matrix(SDM.n);
+	precomputedDistanceMatrix = new_distance_matrix(SDM.n);
 	int row_id = 0;
 	for (std::vector<std::vector<double>>::const_iterator row = SDM.distances.begin(); row != SDM.distances.end(); ++row){
 		int cell_id = 0;
@@ -57,17 +55,15 @@ void decerialize(const char* filename){
 		}	
 		row_id++;
 	}
-	is.close();
+	std::cout<<"initialize with "<<row_id<<" columns"<<std::endl;
+	
 }
 
-void cerealize(DistMat* DM){
-	
-	std::ofstream os("dmat.bin", std::ios::binary);
+void cerealize(DistMat* DM, const char* binfile){
+	std::ofstream os(binfile, std::ios::binary);
 	cereal::BinaryOutputArchive oarchive( os );
 	SerializableDistMat S(DM);
 	oarchive(S);
-	os.close();
-
 }
 
 
@@ -78,17 +74,9 @@ void uncache_graphs(int offset, int ngraphs){
 		NGramGraphCache.pop_back();
 	}		
 }
-/** Default constructor */
-void ngg_serialize( char* text){
-	std::string s = std::string(text);
-	StringPayload p(s);
-	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
-	NGG.createGraph();
-}
-
 
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id){
-	std::cout<<precomputedDistanceMatrix->n<<std::endl;
+	std::cout<<"Precomputed("<<first_text_id<<", "<<second_text_id<<")"<<std::endl;
 	if( first_text_id != 0){
 		return precomputedDistanceMatrix->distances[first_text_id-1][second_text_id-1];
 	}
