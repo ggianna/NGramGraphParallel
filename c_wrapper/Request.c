@@ -4,10 +4,6 @@
 #include "stdlib.h"
 #include <string.h>
 
-void test_serial(char* text){
-     ngg_serialize(text);   
-}
-
 void test_distance_matrix(int n){
 	char** docs = malloc(n*sizeof(char*));
     for(int i = 0; i < n; i++){
@@ -20,7 +16,8 @@ void test_distance_matrix(int n){
     
     DistMat* DM = ngg_compute_distance_matrix(docs, n);
     mat_vis(DM);
-    cerealize(DM);
+    cerealize(DM, "request_test.bin");
+    decerialize("request_test.bin");
 }
 
 int main(void){

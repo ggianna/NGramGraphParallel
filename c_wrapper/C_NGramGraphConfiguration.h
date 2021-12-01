@@ -1,6 +1,5 @@
 #ifndef C_NGRAM_GRAPH_CONFIGURATION_H
 #define C_NGRAM_GRAPH_CONFIGURATION_H
-#include "C_HandleGraphRequest.h"
 #include "GraphComparator.hpp"
 #include "GraphSimilarity.hpp"
 #include "GraphComparator.hpp"
@@ -10,10 +9,8 @@
 #include "cereal/types/unordered_map.hpp"
 #include "cereal/types/memory.hpp"
 #include "cereal/archives/binary.hpp"
-
 #include <iostream>
 #include <fstream>
-
 #include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/archives/binary.hpp>
@@ -48,6 +45,7 @@ class SerializableDistMat{
                 
         template <class Archive>
         void load( Archive & ar ){
+            std::cout<<"loading distance matrix"<<std::endl;
             ar(distances, n);
         }
 };
@@ -67,7 +65,7 @@ DistMat* new_distance_matrix(int n){
 	return DM;
 }
 
-static DistMat* precomputedDistanceMatrix;
+
 static const int NGRAMSIZE_VALUE = 3;
 static const int WINDOWSIZE = 3;
 static const int MAX_MEMORY_GRAPHS = 2000;
@@ -75,7 +73,10 @@ static const int MAX_MEMORY_GRAPHS = 2000;
 static ProximityApproach* approach = new NonSymmetricApproach();
 static GraphComparator<std::string, std::string> comparator;
 static StringSplitter stringSplitter(NGRAMSIZE_VALUE);
+
 static std::vector<NGramGraph> NGramGraphCache;
+static DistMat* precomputedDistanceMatrix;
+
 DistMat* new_distance_matrix(int n);
 
 #endif

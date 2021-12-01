@@ -5,15 +5,7 @@
 extern "C" {
 #endif
 
-// typedef struct sPalDB
-//    { char *pals;  /* words all together */
-//      char **ptrs;  /* pointers to each word */
-//      int npals;	  /* number of words (there is space for 1 more) */
-//      int csize;   /* allocated c size */
-//      int *c;
-//    } PalDB;
-// static PalDB DB;
-
+static const char* objects_storage_file = "/home/ngialitsis/search/NGramGraphParallel/c_wrapper/dmat_20news_raw.bin";
 
 typedef struct  DistMat{
     double** distances;
@@ -31,7 +23,8 @@ void ngg_compute_cross_partition_distances(DistMat* DM, char** docs, int ndocs, 
 DistMat* ngg_compute_distance_matrix(char** docs, int ndocs);
 DistMat* new_square_mat(int n);
 void mat_vis(DistMat* mat);
-void decerialize(const char* filename);
+void cerealize(DistMat* DM, const char* binfile);
+void decerialize(const char* binfile);
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id);
 
 #ifdef __cplusplus

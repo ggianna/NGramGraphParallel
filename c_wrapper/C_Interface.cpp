@@ -10,7 +10,12 @@ extern "C"{
 
 
 void ngg_construct(int text_id, const char* text){
-	std::string s = std::string(text);
+	std::string s;
+	if(!text || strlen(text) < NGRAMSIZE_VALUE){
+		s = std::string(100, ' ');
+	} else {
+		s = std::string(text);
+	}
 	StringPayload p(s);
 	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
 	NGG.createGraph();
@@ -29,7 +34,6 @@ void ngg_construct(int text_id, const char* text){
 /** Default constructor */
 
 void make_cache_graphs(char** ptrs, int ngraphs){	
-	std::cout<<"cache "<<ngraphs<<" graphs"<<std::endl;
 	std::string placeholder(NGRAMSIZE_VALUE+1, ' ');
 	for(int i = 0 ; i < ngraphs; i++){
 		const char* text = ptrs[i];
@@ -39,16 +43,34 @@ void make_cache_graphs(char** ptrs, int ngraphs){
 	}
 	
 }
+void print_state (const std::ios& stream) {
+  std::cout << " good()=" << stream.good();
+  std::cout << " eof()=" << stream.eof();
+  std::cout << " fail()=" << stream.fail();
+  std::cout << " bad()=" << stream.bad();
+  std::cout << std::endl;
+}
 
+<<<<<<< HEAD
+void decerialize(const char* binfile){
+	if(precomputedDistanceMatrix && precomputedDistanceMatrix->distances) return;
+	std::ifstream is(binfile, std::ios::binary);
+	while(!is.good()){print_state(is);};
+||||||| merged common ancestors
 void decerialize(const char* filename){
 	std::ifstream is("dmat.bin", std::ios::binary);
 	if (is.is_open()) {
 		is.close();
 	}
+=======
+void decerialize(const char* binfile){
+	std::ifstream is(binfile, std::ios::binary);
+	while(!is.good()){is.setstate(std::ios::goodbit);};
+>>>>>>> 93489087bb74062f6df097360cd20fe0b16fa5db
 	cereal::BinaryInputArchive iarchive(is);
 	SerializableDistMat SDM;
 	iarchive(SDM);
-	DistMat* precomputedDistanceMatrix = new_distance_matrix(SDM.n);
+	precomputedDistanceMatrix = new_distance_matrix(SDM.n);
 	int row_id = 0;
 	for (std::vector<std::vector<double>>::const_iterator row = SDM.distances.begin(); row != SDM.distances.end(); ++row){
 		int cell_id = 0;
@@ -57,38 +79,32 @@ void decerialize(const char* filename){
 		}	
 		row_id++;
 	}
-	is.close();
+	std::cout<<"initialize with "<<row_id<<" columns"<<std::endl;
+	
 }
 
-void cerealize(DistMat* DM){
-	
-	std::ofstream os("dmat.bin", std::ios::binary);
+void cerealize(DistMat* DM, const char* binfile){
+	std::ofstream os(binfile, std::ios::binary);
 	cereal::BinaryOutputArchive oarchive( os );
 	SerializableDistMat S(DM);
 	oarchive(S);
-	os.close();
-
 }
 
 
 void uncache_graphs(int offset, int ngraphs){
-	std::cout<<"uncache "<<ngraphs<<" graphs"<<std::endl;
 	for(int i = offset ; i < offset+ngraphs ; i++){
 		std::swap(NGramGraphCache.at(offset), NGramGraphCache.back());
 		NGramGraphCache.pop_back();
 	}		
 }
-/** Default constructor */
-void ngg_serialize( char* text){
-	std::string s = std::string(text);
-	StringPayload p(s);
-	NGramGraph NGG(nullptr, &stringSplitter, &p, NGRAMSIZE_VALUE, approach);
-	NGG.createGraph();
-}
-
 
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id){
+<<<<<<< HEAD
+||||||| merged common ancestors
 	std::cout<<precomputedDistanceMatrix->n<<std::endl;
+=======
+	std::cout<<"Precomputed("<<first_text_id<<", "<<second_text_id<<")"<<std::endl;
+>>>>>>> 93489087bb74062f6df097360cd20fe0b16fa5db
 	if( first_text_id != 0){
 		return precomputedDistanceMatrix->distances[first_text_id-1][second_text_id-1];
 	}
@@ -100,14 +116,15 @@ double get_precomputed_distance_if_exists(int first_text_id, int second_text_id)
 
 
 double ngg_dissimilarity(int first_text_id, int second_text_id){
+	
 	GraphComparator<std::string, std::string> comparator;
 	double cs = 
 		comparator.calculateContainmentSimilarity(
 			NGramGraphCache.at(first_text_id),
 			NGramGraphCache.at(second_text_id)
 		);
-	
 	return 1 - cs;
+	
 }
 
 
