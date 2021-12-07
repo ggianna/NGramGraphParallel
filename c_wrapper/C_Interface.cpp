@@ -51,22 +51,10 @@ void print_state (const std::ios& stream) {
   std::cout << std::endl;
 }
 
-<<<<<<< HEAD
 void decerialize(const char* binfile){
 	if(precomputedDistanceMatrix && precomputedDistanceMatrix->distances) return;
 	std::ifstream is(binfile, std::ios::binary);
 	while(!is.good()){print_state(is);};
-||||||| merged common ancestors
-void decerialize(const char* filename){
-	std::ifstream is("dmat.bin", std::ios::binary);
-	if (is.is_open()) {
-		is.close();
-	}
-=======
-void decerialize(const char* binfile){
-	std::ifstream is(binfile, std::ios::binary);
-	while(!is.good()){is.setstate(std::ios::goodbit);};
->>>>>>> 93489087bb74062f6df097360cd20fe0b16fa5db
 	cereal::BinaryInputArchive iarchive(is);
 	SerializableDistMat SDM;
 	iarchive(SDM);
@@ -99,13 +87,7 @@ void uncache_graphs(int offset, int ngraphs){
 }
 
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id){
-<<<<<<< HEAD
-||||||| merged common ancestors
-	std::cout<<precomputedDistanceMatrix->n<<std::endl;
-=======
-	std::cout<<"Precomputed("<<first_text_id<<", "<<second_text_id<<")"<<std::endl;
->>>>>>> 93489087bb74062f6df097360cd20fe0b16fa5db
-	if( first_text_id != 0){
+	if( first_text_id != 0 && second_text_id != 0){
 		return precomputedDistanceMatrix->distances[first_text_id-1][second_text_id-1];
 	}
 	else{

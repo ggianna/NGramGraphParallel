@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-static const char* objects_storage_file = "/home/ngialitsis/search/NGramGraphParallel/c_wrapper/dmat_20news_raw.bin";
+static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw.bin";
 
 typedef struct  DistMat{
     double** distances;
