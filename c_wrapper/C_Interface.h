@@ -5,7 +5,9 @@
 extern "C" {
 #endif
 
-static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw.bin";
+static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw_n5_w5.bin";
+// static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw_n5_w5.bin";
+
 
 typedef struct  DistMat{
     double** distances;

@@ -66,8 +66,8 @@ DistMat* new_distance_matrix(int n){
 }
 
 
-static const int NGRAMSIZE_VALUE = 3;
-static const int WINDOWSIZE = 3;
+static const int NGRAMSIZE_VALUE = 5;
+static const int WINDOWSIZE = 5;
 static const int MAX_MEMORY_GRAPHS = 2000;
 // static ProximityApproach* approach = new SymmetricApproach();
 static ProximityApproach* approach = new NonSymmetricApproach();
