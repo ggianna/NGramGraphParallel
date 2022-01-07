@@ -103,7 +103,8 @@ double ngg_dissimilarity(int first_text_id, int second_text_id){
 	double cs = 
 		comparator.calculateContainmentSimilarity(
 			NGramGraphCache.at(first_text_id),
-			NGramGraphCache.at(second_text_id)
+			NGramGraphCache.at(second_text_id),
+			"CS"
 		);
 	return 1 - cs;
 	

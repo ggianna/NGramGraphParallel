@@ -50,7 +50,7 @@ class GraphComparator
          * \return The similarity between the two graphs, in GraphSimilarity format.
          */
         virtual GraphSimilarity compare(ProximityGraph<PayloadType, AtomType> &pGraph1, ProximityGraph<PayloadType, AtomType> &pGraph2);
-		virtual double calculateContainmentSimilarity(ProximityGraph<PayloadType, AtomType> &pGraph1, ProximityGraph<PayloadType, AtomType> &pGraph2);
+		virtual double calculateContainmentSimilarity(ProximityGraph<PayloadType, AtomType> &pGraph1, ProximityGraph<PayloadType, AtomType> &pGraph2, std::string option);
 
 
     protected:

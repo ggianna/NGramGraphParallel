@@ -91,16 +91,23 @@ GraphSimilarity GraphComparator<PayloadType, AtomType>::compare(ProximityGraph<P
 
 template <typename PayloadType, typename AtomType>
 double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(ProximityGraph<PayloadType, AtomType> &pGraph1,
-							ProximityGraph<PayloadType, AtomType> &pGraph2)
+							ProximityGraph<PayloadType, AtomType> &pGraph2, std::string option)
 {
-    double containmentSimilarity;
     unsigned int numberOfEdges1 = pGraph1.numberOfEdges();
     unsigned int numberOfEdges2 = pGraph2.numberOfEdges();
-    // unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
-    unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
-    
     double VR = calculateValueRatio(pGraph1, pGraph2);
-    return  VR / bigGraphEdges;
+    if(option == "CS"){
+        unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
+        return  VR / bigGraphEdges;
+    }
+    else if(option == "MinCS"){
+        unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
+        return  VR / smallGraphEdges;
+    }
+    else{
+        assert(false && "Unsupported Containment Similarity Option");
+    }
+   
 }
 
 template <typename PayloadType, typename AtomType>

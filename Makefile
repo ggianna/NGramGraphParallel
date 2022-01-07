@@ -4,7 +4,7 @@ TEMPLATES_FOLDER		= include/templateImp
 TEST_PROGRAMS_FOLDER		= test_programs
 DEMOS_FOLDER			= demos
 MEASUREMENT_PROGRAMS_FOLDER	= measurement_programs
-OPENCL_HEADERS_FOLDER		= /home/ngialitsis/CApplications/OpenCL-SDK/include/cpp/
+OPENCL_HEADERS_FOLDER		=/home/ggianna/Documents/CApplications/OpenCL-SDK/include/cpp
 C_WRAPPER_FOLDER		= /home/ngialitsis/search/NGramGraphParallel/c_wrapper
 ###############
 
@@ -86,7 +86,7 @@ $(C_WRAPPER_FOLDER)/libStringSplitter.so: $(SOURCES_FOLDER)/StringSplitter.cpp $
 $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so: $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.cpp $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.h $(C_WRAPPER_FOLDER)/libStringSplitter.so $(C_WRAPPER_FOLDER)/libProximityApproach.so $(C_WRAPPER_FOLDER)/libNGramGraph.so
 	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.cpp -L$(C_WRAPPER_FOLDER) -lStringSplitter -lNGramGraph -lProximityApproach -o $@
 
-$(C_WRAPPER_FOLDER)/libC_Interface.so: $(C_WRAPPER_FOLDER)/C_Interface.cpp $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so 
+$(C_WRAPPER_FOLDER)/libC_Interface.so: $(C_WRAPPER_FOLDER)/C_Interface.cpp $(C_WRAPPER_FOLDER)/libC_HandleGraphRequest.so  
 	$(CC) -I$(HEADERS_FOLDER) -fpic -shared $(C_WRAPPER_FOLDER)/C_Interface.cpp -L$(C_WRAPPER_FOLDER) -lC_HandleGraphRequest -lStringSplitter -lStringAtom -lStringPayload -o $@
 
 $(C_WRAPPER_FOLDER)/Request: $(C_WRAPPER_FOLDER)/Request.c $(C_WRAPPER_FOLDER)/libC_Interface.so  $(C_WRAPPER_FOLDER)/C_HandleGraphRequest.h $(C_WRAPPER_FOLDER)/libStringSplitter.so $(C_WRAPPER_FOLDER)/libProximityApproach.so $(C_WRAPPER_FOLDER)/libNGramGraph.so $(C_WRAPPER_FOLDER)/libGraphSimilarity.so

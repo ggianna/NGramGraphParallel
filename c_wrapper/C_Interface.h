@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw_n5_w5.bin";
+static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw_n5_w5_cs.bin";
 // static const char* objects_storage_file = "/home/ngialitsis/search/dmat_20news_raw_n5_w5.bin";
 
 
@@ -13,7 +13,6 @@ typedef struct  DistMat{
     double** distances;
     int n;
 }DistMat;
-
 
 double ngg_dissimilarity(int first_text_id, int second_text_id);
 void ngg_construct(int text_id, const char* text);
