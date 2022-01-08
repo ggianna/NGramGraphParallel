@@ -111,7 +111,7 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
     else if(option == "MinCS" || option =="sqrtMinCS"){
         unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
         cs = VR / smallGraphEdges;
-        if(option == "sqrtCS"){
+        if(option == "sqrtMinCS"){
             return sqrt(2-2*cs);
         }
         else{
