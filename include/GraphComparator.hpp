@@ -22,7 +22,7 @@
 // project headers
 #include "GraphSimilarity.hpp"
 #include "ProximityGraph.hpp"
-
+#include <math.h>
 
 /**
  * \Class

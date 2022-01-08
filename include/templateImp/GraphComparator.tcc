@@ -95,14 +95,28 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
 {
     unsigned int numberOfEdges1 = pGraph1.numberOfEdges();
     unsigned int numberOfEdges2 = pGraph2.numberOfEdges();
+    double cs;
     double VR = calculateValueRatio(pGraph1, pGraph2);
-    if(option == "CS"){
+    if(option == "CS" || option =="sqrtCS"){
         unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
-        return  VR / bigGraphEdges;
+        cs = VR / bigGraphEdges;
+        if(option == "sqrtCS"){
+            return sqrt(2-2*cs);
+        }
+        else{
+            return cs;
+        }
+        
     }
-    else if(option == "MinCS"){
+    else if(option == "MinCS" || option =="sqrtMinCS"){
         unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
-        return  VR / smallGraphEdges;
+        cs = VR / smallGraphEdges;
+        if(option == "sqrtCS"){
+            return sqrt(2-2*cs);
+        }
+        else{
+            return cs;
+        }
     }
     else{
         assert(false && "Unsupported Containment Similarity Option");

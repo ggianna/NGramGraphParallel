@@ -91,7 +91,7 @@ double get_precomputed_distance_if_exists(int first_text_id, int second_text_id)
 		return precomputedDistanceMatrix->distances[first_text_id-1][second_text_id-1];
 	}
 	else{
-		return -1;
+		return -1; 
 	}
 }
 
@@ -104,7 +104,7 @@ double ngg_dissimilarity(int first_text_id, int second_text_id){
 		comparator.calculateContainmentSimilarity(
 			NGramGraphCache.at(first_text_id),
 			NGramGraphCache.at(second_text_id),
-			"CS"
+			"sqrtCS"
 		);
 	return 1 - cs;
 	
