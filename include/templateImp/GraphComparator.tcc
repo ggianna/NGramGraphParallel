@@ -101,7 +101,7 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
         unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
         cs = VR / bigGraphEdges;
         if(option == "sqrtCS"){
-            return sqrt(2-2*cs);
+            return 1-sqrt(2-2*cs);
         }
         else{
             return cs;
@@ -112,7 +112,7 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
         unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
         cs = VR / smallGraphEdges;
         if(option == "sqrtMinCS"){
-            return sqrt(2-2*cs);
+            return 1-sqrt(2-2*cs);
         }
         else{
             return cs;

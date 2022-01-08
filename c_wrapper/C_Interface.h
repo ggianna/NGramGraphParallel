@@ -7,8 +7,8 @@ extern "C" {
 
 // static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_cs.bin";
 // static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_mincs.bin";
-// static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_sqrt_cs.bin";
-static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_sqrt_mincs.bin";
+static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_sqrt_cs.bin";
+// static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_sqrt_mincs.bin";
 
 
 typedef struct  DistMat{
