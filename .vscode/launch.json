@@ -1,0 +1,114 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+
+    "configurations": [
+        {
+            "name": "Build Graph Index",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ngialitsis/search/metricSpaceLibrary/bin/build-mvp-strings",
+            "args": ["/home/ngialitsis/search/datasets/newsgroups_train_raw_100chars.txt","0","/home/ngialitsis/search/index/20news_mvp_index_100_5_cs","100","5"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Compile",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Query Graph",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ngialitsis/search/metricSpaceLibrary/bin/query-mvp-strings",
+            "args": ["/home/ngialitsis/search/datasets/20news_index_100_5_cs"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Compile",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Experiment #1",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ngialitsis/search/metricSpacesLibrary/bin/query-experiment-a",
+            "args": ["/home/ngialitsis/search/datasets/20news_index_10_10","/home/ngialitsis/search/datasets/newsgroups_train_raw.txt"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Compile",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "Cereal Demo",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ngialitsis/search/NGramGraphParallel/c_wrapper/DemoSerialization",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Cereal-Demo",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "NGG-Serialization",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ngialitsis/search/NGramGraphParallel/c_wrapper/Request",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Compile_Graphs",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+    ]
+}
