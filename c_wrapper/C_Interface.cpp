@@ -51,8 +51,8 @@ void print_state (const std::ios& stream) {
   std::cout << std::endl;
 }
 
-void decerialize(const char* binfile){
-	if(precomputedDistanceMatrix && precomputedDistanceMatrix->distances) return;
+DistMat* decerialize(const char* binfile){
+	if(precomputedDistanceMatrix && precomputedDistanceMatrix->distances) return precomputedDistanceMatrix;
 	std::ifstream is(binfile, std::ios::binary);
 	while(!is.good()){print_state(is);};
 	cereal::BinaryInputArchive iarchive(is);
@@ -68,7 +68,7 @@ void decerialize(const char* binfile){
 		row_id++;
 	}
 	std::cout<<"initialize with "<<row_id<<" columns"<<std::endl;
-	
+	return precomputedDistanceMatrix;
 }
 
 void cerealize(DistMat* DM, const char* binfile){
@@ -104,7 +104,7 @@ double ngg_dissimilarity(int first_text_id, int second_text_id){
 		comparator.calculateContainmentSimilarity(
 			NGramGraphCache.at(first_text_id),
 			NGramGraphCache.at(second_text_id),
-			"sqrtCS"
+			"MinCS"
 		);
 	return 1 - cs;
 	
@@ -186,6 +186,32 @@ void mat_vis(DistMat* DM){
 		}
 		std::cout << std::endl;
 	}
+}
+
+
+void print_stats_distance_matrix(DistMat* DM){
+	double n_pairs = (DM->n *(DM->n-1))/2;
+	std::cout<<"Compute statistics/distribution of "<<n_pairs<<" object pairs"<<std::endl;
+	double distances_sum = 0;
+	for(int i = 0; i < DM->n; i++){
+		for(int j = i ; j < DM->n; j++){	
+			distances_sum += DM->distances[i][j];
+		}
+	}
+	double avg_dist = distances_sum/n_pairs;
+	std::cout<<"Mean:"<<avg_dist<<std::endl;
+	double stddev_sum = 0;
+	double stddev = 0;
+	for(int i = 0; i < DM->n; i++){
+		for(int j = i ; j < DM->n; j++){	
+			stddev = DM->distances[i][j]-avg_dist;
+			stddev_sum += (stddev*stddev);
+		}
+	}
+	double variance =   stddev_sum/n_pairs;
+	std::cout<<"Variance:"<<variance<<std::endl;
+	double intrinsic_dimensionality = (avg_dist*avg_dist)/(2*variance);
+	std::cout<<"Intrinsic Dimensionality:"<<intrinsic_dimensionality<<std::endl;
 }
 
 #ifdef __cplusplus
