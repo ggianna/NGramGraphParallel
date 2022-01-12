@@ -30,7 +30,7 @@ DistMat* ngg_compute_distance_matrix(char** docs, int ndocs);
 DistMat* new_square_mat(int n);
 void mat_vis(DistMat* mat);
 void cerealize(DistMat* DM, const char* binfile);
-DistMat* decerialize(const char* binfile);
+DistMat* decerialize(const char* binfile, int overwrite);
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id);
 void print_stats_distance_matrix(DistMat* DM);
 #ifdef __cplusplus

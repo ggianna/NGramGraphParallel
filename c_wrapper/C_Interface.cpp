@@ -51,10 +51,19 @@ void print_state (const std::ios& stream) {
   std::cout << std::endl;
 }
 
-DistMat* decerialize(const char* binfile){
-	if(precomputedDistanceMatrix && precomputedDistanceMatrix->distances) return precomputedDistanceMatrix;
+DistMat* decerialize(const char* binfile, int overwrite=0){
+
+	if(precomputedDistanceMatrix && precomputedDistanceMatrix->distances) {
+		if(overwrite){
+			free(precomputedDistanceMatrix->distances);
+			free(precomputedDistanceMatrix);
+		}
+		else{
+			return precomputedDistanceMatrix;
+		}
+	}
 	std::ifstream is(binfile, std::ios::binary);
-	while(!is.good()){print_state(is);};
+	// while(!is.good()){print_state(is);};
 	cereal::BinaryInputArchive iarchive(is);
 	SerializableDistMat SDM;
 	iarchive(SDM);

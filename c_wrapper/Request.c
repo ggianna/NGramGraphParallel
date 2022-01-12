@@ -17,7 +17,7 @@ void test_distance_matrix(int n){
     DistMat* DM = ngg_compute_distance_matrix(docs, n);
     mat_vis(DM);
     cerealize(DM, "request_test.bin");
-    decerialize("request_test.bin");
+    decerialize("request_test.bin", 0);
 }
 
 int main(void){
