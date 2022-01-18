@@ -223,6 +223,8 @@ void print_stats_distance_matrix(DistMat* DM){
 	std::cout<<"Intrinsic Dimensionality:"<<intrinsic_dimensionality<<std::endl;
 }
 
+
+
 #ifdef __cplusplus
 }
 

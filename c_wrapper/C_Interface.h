@@ -19,6 +19,7 @@ typedef struct  DistMat{
 
 
 
+
 double ngg_dissimilarity(int first_text_id, int second_text_id);
 void ngg_construct(int text_id, const char* text);
 void make_cache_graphs(char** ptrs, int num_graphs);
