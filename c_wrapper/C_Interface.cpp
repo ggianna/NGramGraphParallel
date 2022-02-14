@@ -2,6 +2,11 @@
 #include "C_Interface.h"
 #include "C_NGramGraphConfiguration.h"
 #include <algorithm>
+#include <stdlib.h>
+#include <numeric>
+#include <random>
+#include <vector>
+#include <experimental/algorithm>
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -113,7 +118,7 @@ double ngg_dissimilarity(int first_text_id, int second_text_id){
 		comparator.calculateContainmentSimilarity(
 			NGramGraphCache.at(first_text_id),
 			NGramGraphCache.at(second_text_id),
-			"MinCS"
+			"TriGenMinCS"
 		);
 	return 1 - cs;
 	
@@ -141,6 +146,7 @@ DistMat* ngg_compute_distance_matrix(char** docs, int ndocs){
 	}
 	return DM;
 }
+
 
 
 void ngg_compute_cross_partition_distances(DistMat* DM, char** docs, int ndocs, int offset1, int offset2){
@@ -224,6 +230,24 @@ void print_stats_distance_matrix(DistMat* DM){
 }
 
 
+int* get_random_sample_indices(int n, int sample_size, int seed){
+	std::vector<int> elements(n) ; 
+	std::vector<int> sample ; 
+	std::iota (std::begin(elements), std::end(elements), 0);
+	std::srand(seed);
+	std::experimental::sample(elements.begin(), elements.end(), std::back_inserter(sample),
+                sample_size, std::mt19937(seed));
+	// std::copy(sample.begin(), sample.end(), std::ostream_iterator<int>(std::cout, " "));
+    // std::cout << "\n";
+
+	std::shuffle(sample.begin(), sample.end(), std::mt19937(seed));
+
+	int* res = (int*) malloc(sample_size*sizeof(int));
+	for(int i = 0 ; i < sample_size; i++){
+		res[i] = sample.at(i);
+	}
+	return res;
+}
 
 #ifdef __cplusplus
 }

@@ -8,9 +8,9 @@ extern "C" {
 // static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_cs.bin";
 // static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_mincs.bin";
 //static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_sqrt_cs.bin";
-// static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_sqrt_mincs.bin";
+static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_trigen_mincs.bin";
 
-static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_mincs.bin";
+// static const char* objects_storage_file = "/home/ngialitsis/search/dmat/dmat_20news_raw_n5_w5_mincs.bin";
 
 typedef struct  DistMat{
     double** distances;
@@ -34,6 +34,7 @@ void cerealize(DistMat* DM, const char* binfile);
 DistMat* decerialize(const char* binfile, int overwrite);
 double get_precomputed_distance_if_exists(int first_text_id, int second_text_id);
 void print_stats_distance_matrix(DistMat* DM);
+int* get_random_sample_indices(int, int, int);
 #ifdef __cplusplus
 }
 #endif

@@ -108,14 +108,17 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
         }
         
     }
-    else if(option == "MinCS" || option =="sqrtMinCS"){
+    else if(option == "MinCS" || option =="sqrtMinCS" || option=="TriGenMinCS"){
         unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
         cs = VR / smallGraphEdges;
         if(option == "sqrtMinCS"){
             return 1-sqrt(2-2*cs);
         }
-        else{
+        else if(option == "MinCS"){
             return cs;
+        }
+        else if(option == "TriGenMinCS"){
+             return 1-pow(1-cs,46);
         }
     }
     else{
@@ -123,6 +126,7 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
     }
    
 }
+
 
 template <typename PayloadType, typename AtomType>
 double GraphComparator<PayloadType, AtomType>::minMaxRatio(double w1, double w2)
