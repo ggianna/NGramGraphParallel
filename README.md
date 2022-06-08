@@ -18,7 +18,7 @@ Inside the project's top directory:\
 `./demos/demo -h`\
 `./demos/demo -f ./demos/demo_input.txt -c serial`
 
-# Setting-up C wrapper (Nikos Gialitsis)
+# Setting-up C wrapper
 * append c\_wrapper directory to LD\_LIBRARY\_PATH   
 	`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:full/path/to/c_wrapper`\
 	or add above line  to ~/.bashrc for permanent use
