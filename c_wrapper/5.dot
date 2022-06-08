@@ -1,0 +1,4 @@
+digraph G {
+"     " [label="     "];
+"     "->"     "  [label=1];
+}

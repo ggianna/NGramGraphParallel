@@ -50,6 +50,7 @@ double GraphComparator<PayloadType, AtomType>::calculateValueRatio(ProximityGrap
 	    weight1 = pair.second;
 	    weight2 = bigGraph.getEdgeWeightByName(name);
 	    if (weight2 > 0) {
+            // std::cout<<name<<":"<<weight1<<" - " << weight2<<std::endl;
 	       	sum += minMaxRatio(weight1, weight2);
 	    }
 	}
@@ -95,30 +96,33 @@ double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(Pr
 {
     unsigned int numberOfEdges1 = pGraph1.numberOfEdges();
     unsigned int numberOfEdges2 = pGraph2.numberOfEdges();
-    double cs;
+    double vs;
     double VR = calculateValueRatio(pGraph1, pGraph2);
-    if(option == "CS" || option =="sqrtCS"){
+    if(option == "VS" || option =="sqrtVS" || option == "TriGenVS"){
         unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
-        cs = VR / bigGraphEdges;
-        if(option == "sqrtCS"){
-            return 1-sqrt(2-2*cs);
+        vs = VR / bigGraphEdges;
+        if(option == "sqrtVS"){
+            return 1-sqrt(2-2*vs);
         }
-        else{
-            return cs;
+        else if(option == "VS"){
+            return vs;
+        }
+        else if(option == "TriGenVS"){
+             return 1-pow(1-vs,62);
         }
         
     }
-    else if(option == "MinCS" || option =="sqrtMinCS" || option=="TriGenMinCS"){
+    else if(option == "MinVS" || option =="sqrtMinVS" || option=="TriGenMinVS"){
         unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
-        cs = VR / smallGraphEdges;
-        if(option == "sqrtMinCS"){
-            return 1-sqrt(2-2*cs);
+        vs = VR / smallGraphEdges;
+        if(option == "sqrtMinVS"){
+            return 1-sqrt(2-2*vs);
         }
-        else if(option == "MinCS"){
-            return cs;
+        else if(option == "MinVS"){
+            return vs;
         }
-        else if(option == "TriGenMinCS"){
-             return 1-pow(1-cs,46);
+        else if(option == "TriGenMinVS"){
+             return 1-pow(1-vs,62);
         }
     }
     else{

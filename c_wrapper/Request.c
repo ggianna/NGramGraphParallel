@@ -10,9 +10,11 @@ void test_distance_matrix(int n){
         printf("\ttype sentence..\n");
         docs[i] = (char *) malloc(100);
         fgets(docs[i], 100, stdin) ;
+        docs[i][strcspn(docs[i], "\n")] = 0;
         printf("\t\t%s\n",docs[i]);
     }
     // ngg_construct_graph_database(docs, n);
+    
     
     DistMat* DM = ngg_compute_distance_matrix(docs, n);
     mat_vis(DM);
@@ -21,5 +23,5 @@ void test_distance_matrix(int n){
 }
 
 int main(void){
-	test_distance_matrix(6);
+	test_distance_matrix(2);
 }

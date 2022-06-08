@@ -1,0 +1,8 @@
+digraph G {
+ababa [label=ababa];
+babab [label=babab];
+babab->ababa  [label=3];
+ababa->ababa  [label=1];
+ababa->babab  [label=1];
+babab->babab  [label=1];
+}

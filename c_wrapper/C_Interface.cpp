@@ -33,6 +33,8 @@ void ngg_construct(int text_id, const char* text){
 		NGramGraphCache.reserve(1); 
 		NGramGraphCache.push_back(NGG);
 	}
+	// NGG.printGraphvizToFile(std::to_string(text_id)+".dot");
+	
 }
 
 
@@ -114,13 +116,13 @@ double get_precomputed_distance_if_exists(int first_text_id, int second_text_id)
 double ngg_dissimilarity(int first_text_id, int second_text_id){
 	
 	GraphComparator<std::string, std::string> comparator;
-	double cs = 
+	double sim = 
 		comparator.calculateContainmentSimilarity(
 			NGramGraphCache.at(first_text_id),
 			NGramGraphCache.at(second_text_id),
-			"TriGenMinCS"
+			"TriGenVS"
 		);
-	return 1 - cs;
+	return 1 - sim;
 	
 }
 
