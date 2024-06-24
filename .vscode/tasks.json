@@ -1,0 +1,47 @@
+{
+    "tasks": [
+        {
+            "label": "Compile_Graphs",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-C",
+                "/home/ngialitsis/search/NGramGraphParallel"
+            ]
+        },
+        {
+            "label": "Compile_Sisap",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-C",
+                "/home/ngialitsis/search/metricSpaceLibrary"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Compile",
+            "dependsOn": [
+                "Compile_Graphs",
+                "Compile_Sisap"
+            ]
+        },
+        {
+            "label": "Cereal-Demo",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "/home/ngialitsis/search/NGramGraphParallel/c_wrapper/DemoSerialization.cpp",
+                "-I",
+                "/home/ngialitsis/search/NGramGraphParallel/include",
+                "-o",
+                "/home/ngialitsis/search/NGramGraphParallel/c_wrapper/DemoSerialization"
+            ],
+        },
+    ],
+    "version": "2.0.0"
+}

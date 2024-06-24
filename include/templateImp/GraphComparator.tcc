@@ -50,6 +50,7 @@ double GraphComparator<PayloadType, AtomType>::calculateValueRatio(ProximityGrap
 	    weight1 = pair.second;
 	    weight2 = bigGraph.getEdgeWeightByName(name);
 	    if (weight2 > 0) {
+            // std::cout<<name<<":"<<weight1<<" - " << weight2<<std::endl;
 	       	sum += minMaxRatio(weight1, weight2);
 	    }
 	}
@@ -86,6 +87,50 @@ GraphSimilarity GraphComparator<PayloadType, AtomType>::compare(ProximityGraph<P
     GraphSimilarity gSimilarity(sizeSimilarity, valueSimilarity, normalizedValueSimilarity, containmentSimilarity);
     return gSimilarity;
 }
+
+
+
+template <typename PayloadType, typename AtomType>
+double GraphComparator<PayloadType, AtomType>::calculateContainmentSimilarity(ProximityGraph<PayloadType, AtomType> &pGraph1,
+							ProximityGraph<PayloadType, AtomType> &pGraph2, std::string option)
+{
+    unsigned int numberOfEdges1 = pGraph1.numberOfEdges();
+    unsigned int numberOfEdges2 = pGraph2.numberOfEdges();
+    double vs;
+    double VR = calculateValueRatio(pGraph1, pGraph2);
+    if(option == "VS" || option =="sqrtVS" || option == "TriGenVS"){
+        unsigned int bigGraphEdges = std::max(numberOfEdges1, numberOfEdges2);
+        vs = VR / bigGraphEdges;
+        if(option == "sqrtVS"){
+            return 1-sqrt(2-2*vs);
+        }
+        else if(option == "VS"){
+            return vs;
+        }
+        else if(option == "TriGenVS"){
+             return 1-pow(1-vs,62);
+        }
+        
+    }
+    else if(option == "MinVS" || option =="sqrtMinVS" || option=="TriGenMinVS"){
+        unsigned int smallGraphEdges = std::min(numberOfEdges1, numberOfEdges2);
+        vs = VR / smallGraphEdges;
+        if(option == "sqrtMinVS"){
+            return 1-sqrt(2-2*vs);
+        }
+        else if(option == "MinVS"){
+            return vs;
+        }
+        else if(option == "TriGenMinVS"){
+             return 1-pow(1-vs,62);
+        }
+    }
+    else{
+        assert(false && "Unsupported Containment Similarity Option");
+    }
+   
+}
+
 
 template <typename PayloadType, typename AtomType>
 double GraphComparator<PayloadType, AtomType>::minMaxRatio(double w1, double w2)

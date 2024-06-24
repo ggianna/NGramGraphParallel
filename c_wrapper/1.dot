@@ -1,0 +1,5 @@
+digraph G {
+ababa [label=ababa];
+babab [label=babab];
+babab->ababa  [label=1];
+}

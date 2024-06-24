@@ -1,3 +1,4 @@
+
 # NGramGraphParallel
 A generic implementation of n-gram graphs, designed to be able to handle not only texts (or text strings in general) but any custom data format, without changes to the main structure of the code.\
 Also, support for OpenCL is added to speed up workload-heavy graph operations with parallelization.
@@ -17,6 +18,14 @@ Inside the project's top directory:\
 `./demos/demo -h`\
 `./demos/demo -f ./demos/demo_input.txt -c serial`
 
+# Setting-up C wrapper
+* append c\_wrapper directory to LD\_LIBRARY\_PATH   
+	`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:full/path/to/c_wrapper`\
+	or add above line  to ~/.bashrc for permanent use
+* edit Makefile path variable `C_WRAPPER_FOLDER` and `OPENCL_HEADERS_FOLDER`
+* run "make" on main directory
+* test wrapper by running ./c\_wrapper/Request
+
 ## Version
 v0.1 This version is the result of a 3-month internship. Only basic functionalities are implemented.
 This version includes:
@@ -33,3 +42,12 @@ v0.2 This version is the result of a 2-month internship. It includes:
 
 ## License
 NGramGraphParallel is licenced under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+
+
+
+
+
+
+
+
